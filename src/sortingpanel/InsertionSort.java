@@ -59,30 +59,4 @@ public class InsertionSort extends SortingPanel {
         doneButton.setEnabled(true);
     }
 
-    @Override
-    protected void lastStep() {
-        while (i < values.size()) {
-            nextStep();
-        }
-
-        nextButton.setEnabled(false);
-        doneButton.setEnabled(false);
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
-    }
-
-    @Override
-    protected void restart() {
-        if (!steps.isEmpty()) {
-            values = new ArrayList<>(steps.firstElement());
-            i = 1;
-            steps.clear();
-            steps.push(new ArrayList<>(values));
-            nextButton.setEnabled(true);
-            doneButton.setEnabled(true);
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
-        }
-    }
-
 }

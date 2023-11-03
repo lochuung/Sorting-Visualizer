@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Helper {
+public class ListHelper {
     public static List<Integer> generateRandomNumbers(int size) {
         List<Integer> nums = new ArrayList<>();
         Random random = new Random();
@@ -14,7 +14,7 @@ public class Helper {
         return nums;
     }
 
-    public static List<Integer> parseStringToArray(String str, int size) {
+    public static List<Integer> parseStringToList(String str, int size) {
         List<Integer> nums = new ArrayList<>();
         String[] arr = str.split(",");
         for (String s : arr) {

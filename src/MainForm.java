@@ -1,6 +1,6 @@
 import sortingpanel.*;
 import util.SortType;
-import util.Helper;
+import util.ListHelper;
 
 import javax.swing.*;
 import java.util.List;
@@ -62,9 +62,9 @@ public class MainForm extends JFrame {
             String layout = Objects.requireNonNull(this.visualizeType.getSelectedItem()).toString();
             List<Integer> values;
             if (arrayValues.getText().isEmpty()) {
-                values = Helper.generateRandomNumbers(size);
+                values = ListHelper.generateRandomNumbers(size);
             } else {
-                values = Helper.parseStringToArray(arrayValues.getText(), size);
+                values = ListHelper.parseStringToList(arrayValues.getText(), size);
             }
             JFrame frame = getVisualizerFrame(values, layout);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

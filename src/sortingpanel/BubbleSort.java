@@ -18,7 +18,7 @@ public class BubbleSort extends SortingPanel {
     @Override
     protected void nextStep() {
         if (!isSorted()) {
-            if (j < size - i - 1) {
+            if (j < values.size() - i - 1) {
                 if (values.get(j) > values.get(j + 1)) {
                     int temp = values.get(j);
                     values.set(j, values.get(j + 1));
@@ -40,51 +40,23 @@ public class BubbleSort extends SortingPanel {
         restartButton.setEnabled(true);
     }
 
-    private boolean isSorted() {
-        for (int i = 0; i < values.size() - 1; i++) {
-            if (values.get(i) > values.get(i + 1)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     protected void prevStep() {
         if (!steps.isEmpty()) {
-            values.clear();
-            values.addAll(steps.pop());
+            values = steps.pop();
             if (i > 0) {
                 i--;
             } else {
-                i = size - 1;
+                i = values.size() - 1;
             }
-            doneButton.setEnabled(true);
-            nextButton.setEnabled(true);
         } else {
             i = 0;
             j = 0;
             prevButton.setEnabled(false);
             restartButton.setEnabled(false);
-            nextButton.setEnabled(true);
-            doneButton.setEnabled(true);
         }
-    }
-
-    @Override
-    protected void restart() {
-        i = 0;
-        j = 0;
-        values.clear();
-        values.addAll(steps.firstElement());
-        steps.clear();
-        steps.push(new ArrayList<>() {{
-            addAll(values);
-        }});
         nextButton.setEnabled(true);
         doneButton.setEnabled(true);
-        prevButton.setEnabled(false);
-        restartButton.setEnabled(false);
     }
 
     @Override
@@ -96,5 +68,14 @@ public class BubbleSort extends SortingPanel {
         doneButton.setEnabled(false);
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
+    }
+
+    private boolean isSorted() {
+        for (int i = 0; i < values.size() - 1; i++) {
+            if (values.get(i) > values.get(i + 1)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
