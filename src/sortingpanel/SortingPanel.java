@@ -17,6 +17,7 @@ public abstract class SortingPanel extends JPanel {
     protected String layout;
     protected int i = 0;
     protected int j = 0;
+    protected int k = 0;
     protected Stack<SortTuple> steps;
     protected Button prevButton;
     protected Button nextButton;
@@ -27,7 +28,7 @@ public abstract class SortingPanel extends JPanel {
         this.values = values;
         this.layout = layout;
         steps = new Stack<>();
-        steps.push(new SortTuple(new ArrayList<>(values), i, j));
+        steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         setUpButton();
     }
 
@@ -39,9 +40,11 @@ public abstract class SortingPanel extends JPanel {
             values = tuple.values;
             i = tuple.i;
             j = tuple.j;
+            k = tuple.otherIndex;
         } else {
             i = 0;
             j = 0;
+            k = 0;
             prevButton.setEnabled(false);
             restartButton.setEnabled(false);
         }
@@ -58,9 +61,10 @@ public abstract class SortingPanel extends JPanel {
             return;
         i = 0;
         j = 0;
+        k = 0;
         values = steps.firstElement().values;
         steps.clear();
-        steps.push(new SortTuple(new ArrayList<>(values), i, j));
+        steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         prevButton.setEnabled(false);
         restartButton.setEnabled(false);
         nextButton.setEnabled(true);

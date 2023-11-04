@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BubbleSort extends SortingPanel {
-    private int k = 0;
-
     public BubbleSort(List<Integer> values, String layout) {
         super(values, layout);
     }
@@ -28,10 +26,11 @@ public class BubbleSort extends SortingPanel {
                 i = j;
                 k++;
             }
-            steps.push(new SortTuple(new ArrayList<>(values), i, j));
+            steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         } else {
             i = values.size();
             j = values.size();
+            k = values.size();
             nextButton.setEnabled(false);
             doneButton.setEnabled(false);
         }
@@ -40,7 +39,7 @@ public class BubbleSort extends SortingPanel {
     }
 
     private boolean isSorted() {
-        for (int i = 0; i < values.size() - 1; i++) {
+        for (int i = 0; i < values.size() - k - 1; i++) {
             if (values.get(i) > values.get(i + 1)) {
                 return false;
             }
