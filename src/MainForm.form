@@ -13,7 +13,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="ef979" binding="choicePanel" layout-manager="FlowLayout" hgap="0" vgap="-1" flow-align="1">
+      <grid id="ef979" layout-manager="FlowLayout" hgap="0" vgap="-1" flow-align="1">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -143,7 +143,7 @@
                 <item value="11"/>
                 <item value="12"/>
               </model>
-              <selectedIndex value="3"/>
+              <selectedIndex value="7"/>
             </properties>
           </component>
           <component id="68647" class="javax.swing.JLabel">

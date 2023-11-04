@@ -1,4 +1,4 @@
-package sortingpanel;
+package sorting;
 
 import util.tuple.SortTuple;
 

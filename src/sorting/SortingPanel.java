@@ -1,10 +1,11 @@
-package sortingpanel;
+package sorting;
 
 import util.Canvas;
 import util.tuple.SortTuple;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,14 @@ public abstract class SortingPanel extends JPanel {
     protected int j = 0;
     protected int k = 0;
     protected Stack<SortTuple> steps;
-    protected Button prevButton;
-    protected Button nextButton;
-    protected Button restartButton;
-    protected Button doneButton;
+    protected JButton prevButton;
+    protected JButton nextButton;
+    protected JButton restartButton;
+    protected JButton doneButton;
+    private static final String RESTART_BUTTON_PATH = "src/resources/restart_button.png";
+    private static final String PREV_BUTTON_PATH = "src/resources/prev_button.png";
+    private static final String NEXT_BUTTON_PATH = "src/resources/next_button.png";
+    private static final String DONE_BUTTON_PATH = "src/resources/done_button.png";
 
     public SortingPanel(List<Integer> values, String layout) {
         this.values = values;
@@ -51,6 +56,7 @@ public abstract class SortingPanel extends JPanel {
         nextButton.setEnabled(true);
         doneButton.setEnabled(true);
     }
+
     protected void lastStep() {
         while (nextButton.isEnabled() || doneButton.isEnabled())
             nextStep();
@@ -88,36 +94,43 @@ public abstract class SortingPanel extends JPanel {
     }
 
     private void setUpButton() {
-        restartButton = new Button("<<");
-        prevButton = new Button("<");
-        nextButton = new Button(">");
-        doneButton = new Button(">>");
-        add(restartButton);
-        add(prevButton);
-        add(nextButton);
-        add(doneButton);
+        JButton[] buttons = {
+                restartButton = createButton(RESTART_BUTTON_PATH),
+                prevButton = createButton(PREV_BUTTON_PATH),
+                nextButton = createButton(NEXT_BUTTON_PATH),
+                doneButton = createButton(DONE_BUTTON_PATH)
+        };
+
+        JPanel buttonPanel = new JPanel();
+        for (JButton button : buttons) {
+            buttonPanel.add(button);
+        }
+        setLayout(new BorderLayout());
+        add(buttonPanel, BorderLayout.SOUTH);
 
         restartButton.setEnabled(false);
         prevButton.setEnabled(false);
 
-        restartButton.addActionListener(e -> {
-            restart();
-            repaint();
-        });
+        ActionListener[] actions = {
+                e -> { restart(); repaint(); },
+                e -> { prevStep(); repaint(); },
+                e -> { nextStep(); repaint(); },
+                e -> { lastStep(); repaint(); }
+        };
 
-        prevButton.addActionListener(e -> {
-            prevStep();
-            repaint();
-        });
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].addActionListener(actions[i]);
+        }
+    }
 
-        nextButton.addActionListener(e -> {
-            nextStep();
-            repaint();
-        });
-
-        doneButton.addActionListener(e -> {
-            lastStep();
-            repaint();
-        });
+    private JButton createButton(String imagePath) {
+        JButton button = new JButton();
+        ImageIcon icon = new ImageIcon(imagePath);
+        icon = new ImageIcon(icon.getImage().getScaledInstance(60, 30, Image.SCALE_SMOOTH));
+        button.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setIcon(icon);
+        return button;
     }
 }

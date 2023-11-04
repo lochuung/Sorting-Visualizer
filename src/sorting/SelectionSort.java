@@ -1,4 +1,4 @@
-package sortingpanel;
+package sorting;
 
 import util.Canvas;
 import util.tuple.SortTuple;
@@ -12,7 +12,6 @@ import static util.Canvas.HORIZON;
 import static util.Canvas.HOR_INC;
 
 public class SelectionSort extends SortingPanel {
-    // k is min index
     public SelectionSort(List<Integer> values, String layout) {
         super(values, layout);
     }

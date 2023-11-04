@@ -4,20 +4,21 @@ import java.awt.*;
 import java.util.List;
 
 public class Canvas {
+    public static final int DIM_W = 600;
+    public static final int DIM_H = 600;
     private static final String barLayout = "Bar";
     private static final String SKIN_COLOR = "#fbd3a6";
     private static final String BLUE = "#1da4e4";
     private static final String LIGHT_BLUE = "#c9e1f5";
     private static final String GREEN = "#73b369";
     private static final String BLACK = "#46535e";
-    public static final int DIM_W = 500;
-    public static final int DIM_H = 500;
     public static final int HORIZON = 350;
     public static final int VERT_INC = 15;
     public static int HOR_INC;
 
     public static void paintArray(Graphics g, String layout,
-                                  List<Integer> list, List<Integer> pointer) {
+                                  List<Integer> list,
+                                  List<Integer> pointer) {
         int maxElement = list.stream()
                 .max(Integer::compareTo)
                 .orElse(0);
@@ -33,7 +34,9 @@ public class Canvas {
         }
     }
 
-    public static void paintArray(Graphics g, int heightLevel, int widthLevel, List<Integer> list, boolean isCurrent) {
+    public static void paintArray(Graphics g, int heightLevel,
+                                  int widthLevel, List<Integer> list,
+                                  boolean isCurrent) {
         int maxWidthLevel = 1 << (heightLevel - 1);
         int arrayWidth = DIM_W / maxWidthLevel;
         for (int i = 0; i < list.size(); i++) {
@@ -48,15 +51,21 @@ public class Canvas {
     }
 
     public static void paintPointer(Graphics g, Color color, int x, int y) {
-        g.setColor(color);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
         int[] xPoints = {x, x - 10, x + 10};
         int[] yPoints = {y, y + 10, y + 10};
-        g.fillPolygon(xPoints, yPoints, 3);
-        g.drawLine(x, y,
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawLine(x, y + 5,
                 x, y + 20);
+        g2d.fillPolygon(xPoints, yPoints, 3);
+        g2d.setStroke(new BasicStroke(1));
     }
 
-    private static void drawItem(Graphics g, String layout, int maxElement, int item, int index, boolean isCurrent, Color currentColor) {
+    private static void drawItem(Graphics g, String layout,
+                                 int maxElement, int item,
+                                 int index, boolean isCurrent,
+                                 Color currentColor) {
         if (layout.equals(barLayout)) {
             drawBar(g, maxElement, item, index, isCurrent, currentColor);
         } else {
@@ -66,7 +75,9 @@ public class Canvas {
         }
     }
 
-    private static void drawBar(Graphics g, int maxElement, int item, int index, boolean isCurrent, Color currentColor) {
+    private static void drawBar(Graphics g, int maxElement, int item,
+                                int index, boolean isCurrent,
+                                Color currentColor) {
         int height = (int) ((double) item / maxElement * HORIZON);
         int x = index * HOR_INC;
         int y = HORIZON - height;
@@ -83,10 +94,14 @@ public class Canvas {
         String number = String.valueOf(item);
         int stringWidth = g.getFontMetrics().stringWidth(number);
         int stringHeight = g.getFontMetrics().getAscent();
-        g.drawString(number, x + (HOR_INC - stringWidth) / 2, y + (height + stringHeight) / 2);
+        g.drawString(number, x + (HOR_INC - stringWidth) / 2,
+                y + (height + stringHeight) / 2);
     }
 
-    private static void drawArray(Graphics g, int x, int y, int HOR_INC, int item, int index, boolean isCurrent, Color currentColor) {
+    private static void drawArray(Graphics g, int x, int y, int HOR_INC,
+                                  int item, int index,
+                                  boolean isCurrent,
+                                  Color currentColor) {
         if (isCurrent) {
             g.setColor(currentColor);
             g.fillRect(x, y, HOR_INC, Canvas.VERT_INC);
@@ -97,10 +112,12 @@ public class Canvas {
         String number = String.valueOf(item);
         int stringWidth = g.getFontMetrics().stringWidth(number);
         int stringHeight = g.getFontMetrics().getAscent();
-        g.drawString(number, x + (HOR_INC - stringWidth) / 2, y + (Canvas.VERT_INC + stringHeight) / 2);
+        g.drawString(number, x + (HOR_INC - stringWidth) / 2,
+                y + (Canvas.VERT_INC + stringHeight) / 2);
 
         String indexStr = String.valueOf(index);
         int indexWidth = g.getFontMetrics().stringWidth(indexStr);
-        g.drawString(indexStr, x + (HOR_INC - indexWidth) / 2, y + Canvas.VERT_INC + stringHeight);
+        g.drawString(indexStr, x + (HOR_INC - indexWidth) / 2,
+                y + Canvas.VERT_INC + stringHeight);
     }
 }

@@ -1,4 +1,4 @@
-package sortingpanel;
+package sorting;
 
 import util.Canvas;
 import util.tuple.MergeSortTuple;
@@ -49,14 +49,17 @@ public class MergeSort extends SortingPanel {
     protected void nextStep() {
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
-        if (currentNode == null || currentTree.root.left == null && currentTree.root.right == null) {
+        if (currentNode == null || currentTree.root.left == null
+                && currentTree.root.right == null) {
             nextButton.setEnabled(false);
             doneButton.setEnabled(false);
             return;
         }
         if (currentNode.left == null && currentNode.right == null) {
             Node<List<Integer>> parentNode = nodeStack.peek();
-            Node<List<Integer>> siblingNode = parentNode.left == currentNode ? parentNode.right : parentNode.left;
+            Node<List<Integer>> siblingNode =
+                    parentNode.left == currentNode ?
+                    parentNode.right : parentNode.left;
             if (siblingNode.left == null && siblingNode.right == null) {
                 parentNode.data = merge(currentNode.data, siblingNode.data);
                 parentNode.left = null;

@@ -9,7 +9,7 @@ public class ListHelper {
         List<Integer> nums = new ArrayList<>();
         Random random = new Random();
         for (int i = 1; i <= size; i++) {
-            nums.add(random.nextInt(100) + 1);
+            nums.add(random.nextInt(300) + 1);
         }
         return nums;
     }
