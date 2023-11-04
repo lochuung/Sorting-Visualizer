@@ -1,6 +1,7 @@
 package sortingpanel;
 
 import util.Canvas;
+import util.tuple.SortTuple;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,10 +14,6 @@ import static util.Canvas.HOR_INC;
 public class SelectionSort extends SortingPanel {
     private int minIndex = 0;
 
-    public SelectionSort() {
-        super();
-    }
-
     public SelectionSort(List<Integer> values, String layout) {
         super(values, layout);
     }
@@ -24,10 +21,10 @@ public class SelectionSort extends SortingPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Canvas.paintArray(g, layout, values, Arrays.asList(i, j, minIndex));
+        Canvas.paintArray(g, layout, values, Arrays.asList(i, minIndex, j));
+
         int x = minIndex * HOR_INC + HOR_INC / 2;
-        int y = HORIZON;
-        Canvas.paintPointer(g, Color.BLUE, x, y);
+        Canvas.paintPointer(g, Color.BLUE, x, HORIZON);
     }
 
     @Override
@@ -44,11 +41,8 @@ public class SelectionSort extends SortingPanel {
                 i++;
                 j = i;
                 minIndex = i;
-
-                steps.push(new ArrayList<>() {{
-                    addAll(values);
-                }});
             }
+            steps.push(new SortTuple(new ArrayList<>(values), i, j, minIndex));
         } else {
             nextButton.setEnabled(false);
             doneButton.setEnabled(false);
@@ -60,13 +54,14 @@ public class SelectionSort extends SortingPanel {
     @Override
     protected void prevStep() {
         if (!steps.isEmpty()) {
-            values = steps.pop();
-            i--;
-            j = i;
+            SortTuple tuple = steps.pop();
+            values = tuple.values;
+            minIndex = tuple.otherIndex;
+            i = tuple.i;
+            j = tuple.j;
         } else {
             i = 0;
             j = 0;
-            minIndex = 0;
             prevButton.setEnabled(false);
             restartButton.setEnabled(false);
         }

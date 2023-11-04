@@ -1,15 +1,12 @@
 package sortingpanel;
 
-import java.awt.*;
+import util.tuple.SortTuple;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class BubbleSort extends SortingPanel {
-
-    public BubbleSort() {
-        super();
-    }
+    private int k = 0;
 
     public BubbleSort(List<Integer> values, String layout) {
         super(values, layout);
@@ -18,54 +15,26 @@ public class BubbleSort extends SortingPanel {
     @Override
     protected void nextStep() {
         if (!isSorted()) {
-            if (j < values.size() - i - 1) {
+            if (j < values.size() - k - 1) {
                 if (values.get(j) > values.get(j + 1)) {
                     int temp = values.get(j);
                     values.set(j, values.get(j + 1));
                     values.set(j + 1, temp);
                 }
+                i = j;
                 j++;
             } else {
                 j = 0;
-                i++;
+                i = j;
+                k++;
             }
-            steps.push(new ArrayList<>() {{
-                addAll(values);
-            }});
+            steps.push(new SortTuple(new ArrayList<>(values), i, j));
         } else {
+            i = values.size();
+            j = values.size();
             nextButton.setEnabled(false);
             doneButton.setEnabled(false);
         }
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
-    }
-
-    @Override
-    protected void prevStep() {
-        if (!steps.isEmpty()) {
-            values = steps.pop();
-            if (i > 0) {
-                i--;
-            } else {
-                i = values.size() - 1;
-            }
-        } else {
-            i = 0;
-            j = 0;
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
-        }
-        nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
-    }
-
-    @Override
-    protected void lastStep() {
-        while (!isSorted()) {
-            nextStep();
-        }
-        nextButton.setEnabled(false);
-        doneButton.setEnabled(false);
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
     }

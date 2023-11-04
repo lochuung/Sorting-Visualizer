@@ -20,7 +20,7 @@ public class ListHelper {
         for (String s : arr) {
             if (nums.size() == size)
                 break;
-            nums.add(Integer.parseInt(s));
+            nums.add(Integer.parseInt(s.trim()));
         }
         if (nums.size() < size) {
             for (int i = nums.size() + 1; i <= size; i++) {

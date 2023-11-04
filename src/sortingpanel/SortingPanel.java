@@ -1,6 +1,7 @@
 package sortingpanel;
 
 import util.Canvas;
+import util.tuple.SortTuple;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,50 +17,50 @@ public abstract class SortingPanel extends JPanel {
     protected String layout;
     protected int i = 0;
     protected int j = 0;
-    protected Stack<List<Integer>> steps;
+    protected Stack<SortTuple> steps;
     protected Button prevButton;
     protected Button nextButton;
     protected Button restartButton;
     protected Button doneButton;
 
-    public SortingPanel() {
-    }
-
     public SortingPanel(List<Integer> values, String layout) {
         this.values = values;
         this.layout = layout;
         steps = new Stack<>();
-        steps.push(new ArrayList<>() {{
-            addAll(values);
-        }});
+        steps.push(new SortTuple(new ArrayList<>(values), i, j));
         setUpButton();
     }
 
     protected abstract void nextStep();
 
-    protected abstract void prevStep();
-
-    protected void lastStep() {
-        while (i < values.size())
-            nextStep();
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
-        nextButton.setEnabled(false);
-        doneButton.setEnabled(false);
+    protected void prevStep() {
+        if (!steps.isEmpty()) {
+            SortTuple tuple = steps.pop();
+            values = tuple.values;
+            i = tuple.i;
+            j = tuple.j;
+        } else {
+            i = 0;
+            j = 0;
+            prevButton.setEnabled(false);
+            restartButton.setEnabled(false);
+        }
+        nextButton.setEnabled(true);
+        doneButton.setEnabled(true);
     }
-
-    ;
+    protected void lastStep() {
+        while (nextButton.isEnabled() || doneButton.isEnabled())
+            nextStep();
+    }
 
     protected void restart() {
         if (steps.isEmpty())
             return;
         i = 0;
         j = 0;
-        values = steps.firstElement();
+        values = steps.firstElement().values;
         steps.clear();
-        steps.push(new ArrayList<>() {{
-            addAll(values);
-        }});
+        steps.push(new SortTuple(new ArrayList<>(values), i, j));
         prevButton.setEnabled(false);
         restartButton.setEnabled(false);
         nextButton.setEnabled(true);

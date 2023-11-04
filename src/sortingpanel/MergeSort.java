@@ -1,7 +1,7 @@
 package sortingpanel;
 
 import util.Canvas;
-import util.MergeSortTuple;
+import util.tuple.MergeSortTuple;
 import util.tree.BinaryTree;
 import util.tree.Node;
 
@@ -11,16 +11,10 @@ import java.util.List;
 import java.util.Stack;
 
 public class MergeSort extends SortingPanel {
-    private Stack<MergeSortTuple> steps;
+    private final Stack<MergeSortTuple> steps;
     private BinaryTree currentTree;
     private Node<List<Integer>> currentNode;
     private Stack<Node<List<Integer>>> nodeStack;
-    private int currentHeightLevel = 1;
-
-    public MergeSort() {
-        super();
-    }
-
     public MergeSort(List<Integer> values, String layout) {
         super(values, layout);
 
@@ -69,17 +63,16 @@ public class MergeSort extends SortingPanel {
                 parentNode.right = null;
                 currentNode = parentNode;
                 nodeStack.pop();
-                currentHeightLevel--;
                 pushStep();
                 return;
             }
 
             currentNode = siblingNode;
+            pushStep();
             return;
         }
         nodeStack.push(currentNode);
         currentNode = currentNode.left;
-        currentHeightLevel++;
         pushStep();
     }
 
@@ -92,7 +85,6 @@ public class MergeSort extends SortingPanel {
             currentNode = currentTree.root;
             nodeStack.clear();
             nodeStack.push(currentNode);
-            currentHeightLevel = 1;
 
             prevButton.setEnabled(false);
             restartButton.setEnabled(false);
@@ -102,21 +94,6 @@ public class MergeSort extends SortingPanel {
         currentNode = prevStep.currentNode;
         currentTree = prevStep.tree;
         nodeStack = prevStep.nodeStack;
-
-        currentHeightLevel--;
-
-    }
-
-    @Override
-    protected void lastStep() {
-        while (currentTree.root.left != null
-                || currentTree.root.right != null) {
-            nextStep();
-        }
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
-        nextButton.setEnabled(false);
-        doneButton.setEnabled(false);
     }
 
     @Override
@@ -125,7 +102,6 @@ public class MergeSort extends SortingPanel {
         currentNode = currentTree.root;
         nodeStack.clear();
         nodeStack.push(currentNode);
-        currentHeightLevel = 1;
         steps.clear();
         pushStep();
 

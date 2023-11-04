@@ -1,16 +1,11 @@
 package sortingpanel;
 
-import java.awt.*;
+import util.tuple.SortTuple;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class InsertionSort extends SortingPanel {
-
-    public InsertionSort() {
-        super();
-    }
-
     public InsertionSort(List<Integer> values, String layout) {
         super(values, layout);
     }
@@ -18,45 +13,23 @@ public class InsertionSort extends SortingPanel {
     @Override
     protected void nextStep() {
         if (i < values.size()) {
-            int key = values.get(i);
-            j = i - 1;
-
-            while (j >= 0 && values.get(j) > key) {
-                values.set(j + 1, values.get(j));
-                j = j - 1;
+            if (j > 0 && values.get(j) < values.get(j - 1)) {
+                int temp = values.get(j);
+                values.set(j, values.get(j - 1));
+                values.set(j - 1, temp);
+                j--;
+            } else {
+                i++;
+                j = i;
             }
-            j++;
-            values.set(j, key);
-            i++;
-            steps.push(new ArrayList<>() {{
-                addAll(values);
-            }});
+            steps.push(new SortTuple(new ArrayList<>(values), i, j));
         } else {
+            i = values.size();
+            j = values.size();
             nextButton.setEnabled(false);
             doneButton.setEnabled(false);
         }
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
     }
-
-    @Override
-    protected void prevStep() {
-        if (!steps.isEmpty()) {
-            values = new ArrayList<>(steps.pop());
-            i--;
-            if (i == 0) {
-                j = 0;
-            } else {
-                j = i - 1;
-            }
-        } else {
-            i = 0;
-            j = 0;
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
-        }
-        nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
-    }
-
 }

@@ -24,10 +24,6 @@ public class BinaryTree {
         return newStack;
     }
 
-    public Node<List<Integer>> getDeepestNode() {
-        return getDeepestNode(root);
-    }
-
     public Node<List<Integer>> findNode(List<Integer> data) {
         return findNode(root, data);
     }
@@ -45,27 +41,6 @@ public class BinaryTree {
             return leftNode;
         }
         return rightNode;
-    }
-
-    private Node<List<Integer>> getDeepestNode(Node<List<Integer>> root) {
-        if (root == null) {
-            return null;
-        }
-        if (root.left == null && root.right == null) {
-            return root;
-        }
-        Node<List<Integer>> leftDeepestNode = getDeepestNode(root.left);
-        Node<List<Integer>> rightDeepestNode = getDeepestNode(root.right);
-        if (leftDeepestNode == null) {
-            return rightDeepestNode;
-        }
-        if (rightDeepestNode == null) {
-            return leftDeepestNode;
-        }
-        if (getCurrentHeightLevel(leftDeepestNode) >= getCurrentHeightLevel(rightDeepestNode)) {
-            return leftDeepestNode;
-        }
-        return rightDeepestNode;
     }
 
     private void copyTree(Node<List<Integer>> root, Node<List<Integer>> treeRoot) {

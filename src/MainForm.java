@@ -3,6 +3,8 @@ import util.SortType;
 import util.ListHelper;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ public class MainForm extends JFrame {
     private JTextField arrayValues;
     private JButton runButton;
     private JPanel mainPanel;
+    private JPanel choicePanel;
     private SortType choice;
 
     public MainForm() {
@@ -55,9 +58,26 @@ public class MainForm extends JFrame {
             if (arrayValues.getText().isEmpty()) {
                 values = ListHelper.generateRandomNumbers(size);
             } else {
+                String regex = "^[0-9]+(,[0-9]+)*$";
+                if (!arrayValues.getText().matches(regex)) {
+                    JOptionPane.showMessageDialog(null,
+                            "Please enter multiple numbers separated by commas");
+                    return;
+                }
                 values = ListHelper.parseStringToList(arrayValues.getText(), size);
             }
             JFrame frame = getVisualizerFrame(values, layout);
+        });
+        runButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                runButton.setIcon(new ImageIcon("src/resources/run_hover_button.png"));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                runButton.setIcon(new ImageIcon("src/resources/run_button.png"));
+            }
         });
     }
 

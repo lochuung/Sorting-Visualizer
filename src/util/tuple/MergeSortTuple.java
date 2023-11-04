@@ -1,4 +1,4 @@
-package util;
+package util.tuple;
 
 import util.tree.BinaryTree;
 import util.tree.Node;

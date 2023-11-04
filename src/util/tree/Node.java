@@ -7,11 +7,7 @@ public class Node<T> {
 
     public Node(T data) {
         this.data = data;
-    }
-
-    public Node(T data, Node<T> left, Node<T> right) {
-        this.data = data;
-        this.left = left;
-        this.right = right;
+        this.left = null;
+        this.right = null;
     }
 }
