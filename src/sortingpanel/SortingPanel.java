@@ -5,11 +5,11 @@ import util.Canvas;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import static util.Canvas.DIM_H;
-import static util.Canvas.DIM_W;
+import static util.Canvas.*;
 
 public abstract class SortingPanel extends JPanel {
     protected List<Integer> values;
@@ -46,7 +46,9 @@ public abstract class SortingPanel extends JPanel {
         restartButton.setEnabled(true);
         nextButton.setEnabled(false);
         doneButton.setEnabled(false);
-    };
+    }
+
+    ;
 
     protected void restart() {
         if (steps.isEmpty())
@@ -67,9 +69,12 @@ public abstract class SortingPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Canvas.paintArray(g, layout, values);
-        Canvas.paintPointer(g, Color.RED, i);
-        Canvas.paintPointer(g, Color.GREEN, j);
+        Canvas.paintArray(g, layout, values, Arrays.asList(i, j));
+        int x1 = HOR_INC * i + HOR_INC / 2;
+        int x2 = HOR_INC * j + HOR_INC / 2;
+        int y = HORIZON;
+        Canvas.paintPointer(g, Color.RED, x1, y);
+        Canvas.paintPointer(g, Color.GREEN, x2, y);
     }
 
     @Override

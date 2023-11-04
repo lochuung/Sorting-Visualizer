@@ -4,7 +4,11 @@ import util.Canvas;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static util.Canvas.HORIZON;
+import static util.Canvas.HOR_INC;
 
 public class SelectionSort extends SortingPanel {
     private int minIndex = 0;
@@ -20,7 +24,10 @@ public class SelectionSort extends SortingPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Canvas.paintPointer(g, Color.BLUE, minIndex);
+        Canvas.paintArray(g, layout, values, Arrays.asList(i, j, minIndex));
+        int x = minIndex * HOR_INC + HOR_INC / 2;
+        int y = HORIZON;
+        Canvas.paintPointer(g, Color.BLUE, x, y);
     }
 
     @Override
