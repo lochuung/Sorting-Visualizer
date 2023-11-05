@@ -20,11 +20,11 @@ public abstract class SortingPanel extends JPanel {
     protected int j = 0;
     protected int k = 0;
     protected Stack<SortTuple> steps;
-    private JButton backToMainButton;
     protected JButton prevButton;
     protected JButton nextButton;
     protected JButton restartButton;
     protected JButton doneButton;
+    protected SortingFrame parentFrame;
     private static final String RESTART_BUTTON_PATH = "src/resources/restart_button.png";
     private static final String PREV_BUTTON_PATH = "src/resources/prev_button.png";
     private static final String NEXT_BUTTON_PATH = "src/resources/next_button.png";
@@ -39,6 +39,10 @@ public abstract class SortingPanel extends JPanel {
         steps = new Stack<>();
         steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         setUpButton();
+    }
+
+    public void setParentFrame(SortingFrame parentFrame) {
+        this.parentFrame = parentFrame;
     }
 
     protected abstract void nextStep();
@@ -100,19 +104,33 @@ public abstract class SortingPanel extends JPanel {
                 doneButton = createButton(DONE_BUTTON_PATH)
         };
 
-        JPanel buttonPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
         for (JButton button : controlButtons) {
-            buttonPanel.add(button);
+            bottomPanel.add(button);
         }
-        buttonPanel.setSize(DIM_W, CONTROL_BUTTON_HEIGHT);
-        add(buttonPanel, BorderLayout.SOUTH);
+        bottomPanel.setSize(DIM_W, CONTROL_BUTTON_HEIGHT);
+        add(bottomPanel, BorderLayout.SOUTH);
 
-        backToMainButton = createButton(BACK_TO_MAIN_BUTTON_PATH);
-        backToMainButton.addActionListener(e -> {
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            frame.dispose();
+        JPanel topPanel = new JPanel();
+        JButton backButton = createButton(BACK_TO_MAIN_BUTTON_PATH);
+        backButton.addActionListener(e -> {
+            parentFrame.dispose();
+            parentFrame.getMainForm().setVisible(true);
         });
-        add(backToMainButton, BorderLayout.NORTH);
+        JPanel buttonWrapper = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weighty = 1; // this will make the component center align vertically
+        buttonWrapper.add(backButton, gbc);
+
+        topPanel.setLayout(new GridLayout());
+        JLabel label = getSortTitle();
+        topPanel.add(label);
+        topPanel.add(buttonWrapper);
+        topPanel.setPreferredSize(new Dimension(DIM_W, (DIM_H - HORIZON) / 2));
+        add(topPanel, BorderLayout.NORTH);
+
         restartButton.setEnabled(false);
         prevButton.setEnabled(false);
 
@@ -140,17 +158,35 @@ public abstract class SortingPanel extends JPanel {
         }
     }
 
+    private JLabel getSortTitle() {
+        JLabel label = new JLabel();
+        if (this instanceof BubbleSort) {
+            label.setText("Bubble Sort");
+        } else if (this instanceof SelectionSort) {
+            label.setText("Selection Sort");
+        } else if (this instanceof InsertionSort) {
+            label.setText("Insertion Sort");
+        } else if (this instanceof MergeSort) {
+            label.setText("Merge Sort");
+        }
+        label.setFont(new Font("Ink Free", Font.BOLD, 30));
+        label.setForeground(Color.BLUE);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        return label;
+    }
+
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
         ImageIcon icon = new ImageIcon(imagePath);
+        int width = icon.getIconWidth() *
+                CONTROL_BUTTON_HEIGHT
+                / icon.getIconHeight();
+        int height = CONTROL_BUTTON_HEIGHT;
         icon = new ImageIcon(icon.getImage()
-                .getScaledInstance(
-                        icon.getIconWidth() *
-                                CONTROL_BUTTON_HEIGHT
-                                / icon.getIconHeight(),
-                        CONTROL_BUTTON_HEIGHT,
+                .getScaledInstance(width,
+                        height,
                         Image.SCALE_SMOOTH));
-        button.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+        button.setPreferredSize(new Dimension(width, height));
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setIcon(icon);

@@ -1,5 +1,6 @@
 package sorting;
 
+import form.MainForm;
 import util.SortType;
 
 import javax.swing.*;
@@ -10,8 +11,10 @@ import static util.Canvas.DIM_H;
 import static util.Canvas.DIM_W;
 
 public class SortingFrame extends JFrame {
-    SortingPanel sortingPanel;
-    public SortingFrame(List<Integer> values, String layout, SortType choice) {
+    private final MainForm mainForm;
+
+    public SortingFrame(List<Integer> values, String layout, SortType choice, MainForm mainForm) {
+        SortingPanel sortingPanel;
         switch (choice) {
             case BUBBLE_SORT:
                 sortingPanel = new BubbleSort(values, layout);
@@ -28,15 +31,20 @@ public class SortingFrame extends JFrame {
             default:
                 throw new IllegalStateException("Unexpected value: " + choice);
         }
-
+        this.mainForm = mainForm;
+        sortingPanel.setParentFrame(this);
         setLayout(new BorderLayout());
         add(sortingPanel, BorderLayout.CENTER);
         setResizable(false);
-        setIconImage(new ImageIcon("src/resources/program_logo.png").getImage());
+        setIconImage(new ImageIcon(MainForm.LOGO_PATH).getImage());
         setSize(DIM_W, DIM_H);
         pack();
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle("Sorting Visualization");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle(MainForm.PROGRAM_TITLE);
         setVisible(true);
+    }
+
+    public MainForm getMainForm() {
+        return mainForm;
     }
 }

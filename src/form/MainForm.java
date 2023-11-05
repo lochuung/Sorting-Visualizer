@@ -1,4 +1,7 @@
+package form;
+
 import sorting.*;
+import util.Canvas;
 import util.ListHelper;
 import util.SortType;
 
@@ -9,9 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainForm extends JFrame {
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 600;
-    private static final String LOGO_PATH = "src/resources/program_logo.png";
+    public static final String PROGRAM_TITLE = "Sorting Visualization";
+    public static final String LOGO_PATH = "src/resources/program_logo.png";
     private static final String RUN_BUTTON_PATH = "src/resources/run_button.png";
     private static final String RUN_BUTTON_HOVER_PATH = "src/resources/run_hover_button.png";
     private JButton bubbleSortButton;
@@ -37,9 +39,9 @@ public class MainForm extends JFrame {
         pack();
         setIconImage(new ImageIcon(LOGO_PATH).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Sorting Visualization");
+        setTitle(PROGRAM_TITLE);
         setVisible(true);
-        setSize(WIDTH, HEIGHT);
+        setSize(Canvas.DIM_W, Canvas.DIM_H);
     }
 
     private void setUpButtons() {
@@ -102,7 +104,8 @@ public class MainForm extends JFrame {
             }
             values = ListHelper.parseStringToList(arrayValues.getText(), size);
         }
-        new SortingFrame(values, layout, choice);
+        new SortingFrame(values, layout, choice, this);
+        setVisible(false);
     }
 
     private void updateButtonAndInput() {
@@ -143,8 +146,8 @@ public class MainForm extends JFrame {
         }
         size.setSelectedItem(maxSize);
 
-        visualizeType.setSelectedItem((choice == SortType.MERGE_SORT) ? "Array" :
-                visualizeType.getSelectedItem());
+        visualizeType.setSelectedItem(
+                (choice == SortType.MERGE_SORT) ? "Array" : "Bar");
         visualizeType.setEnabled(choice != SortType.MERGE_SORT);
     }
 
