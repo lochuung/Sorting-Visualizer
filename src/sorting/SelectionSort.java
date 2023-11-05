@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static util.Canvas.HORIZON;
-import static util.Canvas.HOR_INC;
-
 public class SelectionSort extends SortingPanel {
     public SelectionSort(List<Integer> values, String layout) {
         super(values, layout);
@@ -20,9 +17,6 @@ public class SelectionSort extends SortingPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Canvas.paintArray(g, layout, values, Arrays.asList(i, k, j));
-
-        int x = k * HOR_INC + HOR_INC / 2;
-        Canvas.paintPointer(g, Color.BLUE, x, HORIZON);
     }
 
     @Override

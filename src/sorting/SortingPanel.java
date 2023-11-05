@@ -20,6 +20,7 @@ public abstract class SortingPanel extends JPanel {
     protected int j = 0;
     protected int k = 0;
     protected Stack<SortTuple> steps;
+    private JButton backToMainButton;
     protected JButton prevButton;
     protected JButton nextButton;
     protected JButton restartButton;
@@ -28,10 +29,13 @@ public abstract class SortingPanel extends JPanel {
     private static final String PREV_BUTTON_PATH = "src/resources/prev_button.png";
     private static final String NEXT_BUTTON_PATH = "src/resources/next_button.png";
     private static final String DONE_BUTTON_PATH = "src/resources/done_button.png";
+    private static final String BACK_TO_MAIN_BUTTON_PATH = "src/resources/back_to_main_button.png";
 
     public SortingPanel(List<Integer> values, String layout) {
         this.values = values;
         this.layout = layout;
+        setPreferredSize(new Dimension(DIM_W, DIM_H));
+        setLayout(new BorderLayout());
         steps = new Stack<>();
         steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         setUpButton();
@@ -81,11 +85,6 @@ public abstract class SortingPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Canvas.paintArray(g, layout, values, Arrays.asList(i, j));
-        int x1 = HOR_INC * i + HOR_INC / 2;
-        int x2 = HOR_INC * j + HOR_INC / 2;
-        int y = HORIZON;
-        Canvas.paintPointer(g, Color.RED, x1, y);
-        Canvas.paintPointer(g, Color.GREEN, x2, y);
     }
 
     @Override
@@ -94,7 +93,7 @@ public abstract class SortingPanel extends JPanel {
     }
 
     private void setUpButton() {
-        JButton[] buttons = {
+        JButton[] controlButtons = {
                 restartButton = createButton(RESTART_BUTTON_PATH),
                 prevButton = createButton(PREV_BUTTON_PATH),
                 nextButton = createButton(NEXT_BUTTON_PATH),
@@ -102,31 +101,55 @@ public abstract class SortingPanel extends JPanel {
         };
 
         JPanel buttonPanel = new JPanel();
-        for (JButton button : buttons) {
+        for (JButton button : controlButtons) {
             buttonPanel.add(button);
         }
-        setLayout(new BorderLayout());
+        buttonPanel.setSize(DIM_W, CONTROL_BUTTON_HEIGHT);
         add(buttonPanel, BorderLayout.SOUTH);
 
+        backToMainButton = createButton(BACK_TO_MAIN_BUTTON_PATH);
+        backToMainButton.addActionListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            frame.dispose();
+        });
+        add(backToMainButton, BorderLayout.NORTH);
         restartButton.setEnabled(false);
         prevButton.setEnabled(false);
 
         ActionListener[] actions = {
-                e -> { restart(); repaint(); },
-                e -> { prevStep(); repaint(); },
-                e -> { nextStep(); repaint(); },
-                e -> { lastStep(); repaint(); }
+                e -> {
+                    restart();
+                    repaint();
+                },
+                e -> {
+                    prevStep();
+                    repaint();
+                },
+                e -> {
+                    nextStep();
+                    repaint();
+                },
+                e -> {
+                    lastStep();
+                    repaint();
+                }
         };
 
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].addActionListener(actions[i]);
+        for (int i = 0; i < controlButtons.length; i++) {
+            controlButtons[i].addActionListener(actions[i]);
         }
     }
 
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
         ImageIcon icon = new ImageIcon(imagePath);
-        icon = new ImageIcon(icon.getImage().getScaledInstance(60, 30, Image.SCALE_SMOOTH));
+        icon = new ImageIcon(icon.getImage()
+                .getScaledInstance(
+                        icon.getIconWidth() *
+                                CONTROL_BUTTON_HEIGHT
+                                / icon.getIconHeight(),
+                        CONTROL_BUTTON_HEIGHT,
+                        Image.SCALE_SMOOTH));
         button.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);

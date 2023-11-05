@@ -15,42 +15,49 @@ public class Canvas {
     public static final int HORIZON = 350;
     public static final int VERT_INC = 15;
     public static int HOR_INC;
+    public static final int CONTROL_BUTTON_HEIGHT = 30;
 
     public static void paintArray(Graphics g, String layout,
                                   List<Integer> list,
                                   List<Integer> pointer) {
-        int maxElement = list.stream()
-                .max(Integer::compareTo)
-                .orElse(0);
+        assert list != null && pointer != null && pointer.size() <= 3;
+
         HOR_INC = DIM_W / list.size();
-        String[] colors = {SKIN_COLOR, LIGHT_BLUE, GREEN};
-        for (int i = 0; i < list.size(); i++) {
-            if (pointer.contains(i)) {
-                drawItem(g, layout, maxElement, list.get(i), i, true,
-                        Color.decode(colors[pointer.indexOf(i)]));
-            } else {
-                drawItem(g, layout, maxElement, list.get(i), i, false, null);
-            }
-        }
+        drawItems(g, layout, list, pointer);
+        drawPointers(g, layout, pointer);
     }
 
-    public static void paintArray(Graphics g, int heightLevel,
-                                  int widthLevel, List<Integer> list,
-                                  boolean isCurrent) {
+    public static void paintArrayTree(Graphics g, int heightLevel,
+                                      int widthLevel, List<Integer> list,
+                                      boolean isCurrent) {
+        int maxHeightLevel = (int) (Math.log(list.size()) / Math.log(2)) + 1;
+        int treeHeight = (maxHeightLevel + 1) * 3 * VERT_INC;
         int maxWidthLevel = 1 << (heightLevel - 1);
-        int arrayWidth = DIM_W / maxWidthLevel;
+        int arrayWidth = DIM_W / maxWidthLevel / 2;
         for (int i = 0; i < list.size(); i++) {
-            int itemWidth = arrayWidth / 2 / list.size();
+            int itemWidth = arrayWidth / list.size();
             int x = i * itemWidth
-                    + (widthLevel - 1) * arrayWidth
-                    + arrayWidth / 4;
-            int y = heightLevel * 3 * VERT_INC;
+                    + (widthLevel - 1) * arrayWidth * 2
+                    + arrayWidth / 2;
+            int y = (heightLevel - 1) * 3 * VERT_INC + (DIM_H - treeHeight) / 2;
             drawArray(g, x, y, itemWidth, list.get(i), i, isCurrent,
                     Color.decode(LIGHT_BLUE));
         }
     }
 
-    public static void paintPointer(Graphics g, Color color, int x, int y) {
+    private static void drawPointers(Graphics g, String layout,
+                                     List<Integer> pointer) {
+        Color[] pointerColors = {Color.RED, Color.BLUE, Color.GREEN};
+        for (int i = 0; i < pointer.size(); i++) {
+            int x = pointer.get(i) * HOR_INC + HOR_INC / 2;
+            int y = (DIM_H + HORIZON) / 2 + VERT_INC;
+            if (!layout.equals(barLayout))
+                y = DIM_H / 2 + VERT_INC * 4;
+            drawPointer(g, pointerColors[i], x, y);
+        }
+    }
+
+    private static void drawPointer(Graphics g, Color color, int x, int y) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
         int[] xPoints = {x, x - 10, x + 10};
@@ -60,6 +67,24 @@ public class Canvas {
                 x, y + 20);
         g2d.fillPolygon(xPoints, yPoints, 3);
         g2d.setStroke(new BasicStroke(1));
+    }
+
+    private static void drawItems(Graphics g, String layout,
+                                  List<Integer> list,
+                                  List<Integer> pointer) {
+        int maxElement = list.stream()
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        String[] elementColors = {SKIN_COLOR, LIGHT_BLUE, GREEN};
+        for (int i = 0; i < list.size(); i++) {
+            if (pointer.contains(i)) {
+                drawItem(g, layout, maxElement, list.get(i), i, true,
+                        Color.decode(elementColors[pointer.indexOf(i)]));
+            } else {
+                drawItem(g, layout, maxElement, list.get(i), i, false, null);
+            }
+        }
     }
 
     private static void drawItem(Graphics g, String layout,
@@ -80,7 +105,7 @@ public class Canvas {
                                 Color currentColor) {
         int height = (int) ((double) item / maxElement * HORIZON);
         int x = index * HOR_INC;
-        int y = HORIZON - height;
+        int y = (DIM_H + HORIZON) / 2 - height;
         if (isCurrent) {
             g.setColor(currentColor);
         } else {

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainForm extends JFrame {
-    private static final int HEIGHT = 500;
-    private static final int WIDTH = 500;
+    private static final int HEIGHT = 600;
+    private static final int WIDTH = 600;
     private static final String LOGO_PATH = "src/resources/program_logo.png";
     private static final String RUN_BUTTON_PATH = "src/resources/run_button.png";
     private static final String RUN_BUTTON_HOVER_PATH = "src/resources/run_hover_button.png";

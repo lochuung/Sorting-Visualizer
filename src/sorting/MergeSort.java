@@ -40,7 +40,7 @@ public class MergeSort extends SortingPanel {
             return;
         int heightLevel = currentTree.getCurrentHeightLevel(root);
         int widthLevel = currentTree.getCurrentWidth(root);
-        Canvas.paintArray(g, heightLevel, widthLevel, root.data, currentNode == root);
+        Canvas.paintArrayTree(g, heightLevel, widthLevel, root.data, currentNode == root);
         drawTree(g, root.left);
         drawTree(g, root.right);
     }

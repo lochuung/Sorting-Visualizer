@@ -6,9 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static util.Canvas.DIM_H;
+import static util.Canvas.DIM_W;
+
 public class SortingFrame extends JFrame {
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 600;
     SortingPanel sortingPanel;
     public SortingFrame(List<Integer> values, String layout, SortType choice) {
         switch (choice) {
@@ -32,9 +33,9 @@ public class SortingFrame extends JFrame {
         add(sortingPanel, BorderLayout.CENTER);
         setResizable(false);
         setIconImage(new ImageIcon("src/resources/program_logo.png").getImage());
+        setSize(DIM_W, DIM_H);
         pack();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(WIDTH, HEIGHT);
         setTitle("Sorting Visualization");
         setVisible(true);
     }
