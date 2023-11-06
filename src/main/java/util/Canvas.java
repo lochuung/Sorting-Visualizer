@@ -1,5 +1,8 @@
 package util;
 
+import util.tree.BinaryTree;
+import util.tree.Node;
+
 import java.awt.*;
 import java.util.List;
 
@@ -27,10 +30,50 @@ public class Canvas {
         drawPointers(g, layout, pointer);
     }
 
-    public static void paintArrayTree(Graphics g, int heightLevel,
-                                      int widthLevel, List<Integer> list,
-                                      boolean isCurrent) {
-        int maxHeightLevel = (int) (Math.log(list.size()) / Math.log(2)) + 1;
+    public static void drawTree(Graphics g, Node<List<Integer>> root,
+                                BinaryTree currentTree,
+                                Node<List<Integer>> currentNode) {
+        if (root == null || currentNode != null
+                && currentNode.isParent(root))
+            return;
+
+        int heightLevel = currentTree.getCurrentHeightLevel(root);
+        int widthLevel = currentTree.getCurrentWidth(root);
+        int maxHeightLevel = currentTree.getMaxHeightLevel();
+        paintNode(g, heightLevel, widthLevel, maxHeightLevel, root,
+                currentNode == root);
+
+        if (currentNode == null)
+            return;
+
+        if (currentNode == root)
+            paintChildren(g, currentTree, root, heightLevel);
+
+
+        if (root.left != null && root.left.isPainted)
+            drawTree(g, root.left, currentTree, currentNode);
+        if (root.right != null && root.right.isPainted)
+            drawTree(g, root.right, currentTree, currentNode);
+    }
+
+    private static void paintChildren(Graphics g, BinaryTree currentTree,
+                                      Node<List<Integer>> root, int heightLevel) {
+        if (root.left != null)
+            paintNode(g, heightLevel + 1,
+                    currentTree.getCurrentWidth(root.left), currentTree.getMaxHeightLevel(),
+                    root.left,
+                    false);
+
+        if (root.right != null)
+            paintNode(g, heightLevel + 1,
+                    currentTree.getCurrentWidth(root.right), currentTree.getMaxHeightLevel(), root.right,
+                    false);
+    }
+
+    private static void paintNode(Graphics g, int heightLevel,
+                                  int widthLevel, int maxHeightLevel, Node<List<Integer>> node,
+                                  boolean isCurrent) {
+        List<Integer> list = node.data;
         int treeHeight = (maxHeightLevel + 1) * 3 * VERT_INC;
         int maxWidthLevel = 1 << (heightLevel - 1);
         int arrayWidth = DIM_W / maxWidthLevel / 2;

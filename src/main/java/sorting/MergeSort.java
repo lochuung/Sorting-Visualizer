@@ -15,14 +15,14 @@ public class MergeSort extends SortingPanel {
     private BinaryTree currentTree;
     private Node<List<Integer>> currentNode;
     private Stack<Node<List<Integer>>> nodeStack;
+
     public MergeSort(List<Integer> values, String layout) {
         super(values, layout);
 
         steps = new Stack<>();
         nodeStack = new Stack<>();
         currentTree = new BinaryTree(values);
-        currentNode = currentTree.root;
-        nodeStack.push(currentNode);
+        currentNode = null;
         pushStep();
     }
 
@@ -32,50 +32,58 @@ public class MergeSort extends SortingPanel {
             return;
         }
         g.clearRect(0, 0, getWidth(), getHeight());
-        drawTree(g, currentTree.root);
+        Canvas.drawTree(g, currentTree.root, currentTree, currentNode);
     }
 
-    private void drawTree(Graphics g, Node<List<Integer>> root) {
-        if (root == null)
-            return;
-        int heightLevel = currentTree.getCurrentHeightLevel(root);
-        int widthLevel = currentTree.getCurrentWidth(root);
-        Canvas.paintArrayTree(g, heightLevel, widthLevel, root.data, currentNode == root);
-        drawTree(g, root.left);
-        drawTree(g, root.right);
-    }
 
     @Override
     protected void nextStep() {
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
-        if (currentNode == null || currentTree.root.left == null
-                && currentTree.root.right == null) {
-            nextButton.setEnabled(false);
-            doneButton.setEnabled(false);
+        if (currentNode == null) {
+            currentNode = currentTree.root;
+            currentNode.isPainted = true;
+            if (currentNode.left != null)
+                currentNode.left.isPainted = true;
+            if (currentNode.right != null)
+                currentNode.right.isPainted = true;
+            pushStep();
             return;
         }
+
         if (currentNode.left == null && currentNode.right == null) {
             Node<List<Integer>> parentNode = nodeStack.peek();
-            Node<List<Integer>> siblingNode =
-                    parentNode.left == currentNode ?
+            currentNode = parentNode.left == currentNode ?
                     parentNode.right : parentNode.left;
-            if (siblingNode.left == null && siblingNode.right == null) {
-                parentNode.data = merge(currentNode.data, siblingNode.data);
+            if (parentNode.left == currentNode) {
+                parentNode.data = merge(parentNode.left.data,
+                        parentNode.right.data);
                 parentNode.left = null;
                 parentNode.right = null;
                 currentNode = parentNode;
                 nodeStack.pop();
-                pushStep();
-                return;
+                if (currentTree.root.left == null
+                        && currentTree.root.right == null) {
+                    nextButton.setEnabled(false);
+                    doneButton.setEnabled(false);
+                }
+            } else {
+                currentNode.isPainted = true;
+                if (currentNode.left != null)
+                    currentNode.left.isPainted = true;
+                if (currentNode.right != null)
+                    currentNode.right.isPainted = true;
             }
-
-            currentNode = siblingNode;
             pushStep();
             return;
         }
         nodeStack.push(currentNode);
         currentNode = currentNode.left;
+        currentNode.isPainted = true;
+        if (currentNode.left != null)
+            currentNode.left.isPainted = true;
+        if (currentNode.right != null)
+            currentNode.right.isPainted = true;
         pushStep();
     }
 
@@ -83,30 +91,27 @@ public class MergeSort extends SortingPanel {
     protected void prevStep() {
         nextButton.setEnabled(true);
         doneButton.setEnabled(true);
-        if (steps.size() == 1) {
-            currentTree = new BinaryTree(values);
-            currentNode = currentTree.root;
-            nodeStack.clear();
-            nodeStack.push(currentNode);
-
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
+        if (steps.isEmpty()) {
             return;
         }
-        MergeSortTuple prevStep = steps.pop();
+        steps.pop();
+        MergeSortTuple prevStep = steps.peek();
         currentNode = prevStep.currentNode;
         currentTree = prevStep.tree;
         nodeStack = prevStep.nodeStack;
+        if (steps.size() == 1) {
+            steps.clear();
+            pushStep();
+            prevButton.setEnabled(false);
+            restartButton.setEnabled(false);
+        }
     }
 
     @Override
     protected void restart() {
-        currentTree = new BinaryTree(values);
-        currentNode = currentTree.root;
-        nodeStack.clear();
-        nodeStack.push(currentNode);
-        steps.clear();
-        pushStep();
+        while (steps.size() > 1) {
+            prevStep();
+        }
 
         prevButton.setEnabled(false);
         restartButton.setEnabled(false);
@@ -136,7 +141,8 @@ public class MergeSort extends SortingPanel {
     private void pushStep() {
         BinaryTree newTree = new BinaryTree(currentTree);
         steps.push(new MergeSortTuple(
-                newTree.findNode(currentNode.data),
+                currentNode == null ?
+                        null : newTree.findNode(currentNode.data),
                 newTree,
                 newTree.copyNodeStack(nodeStack)));
     }

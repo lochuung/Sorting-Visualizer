@@ -30,17 +30,18 @@
           <component id="983fa" class="javax.swing.JButton" binding="bubbleSortButton" default-binding="true">
             <constraints/>
             <properties>
+              <background color="-13393733"/>
               <borderPainted value="false"/>
               <contentAreaFilled value="false"/>
               <defaultCapable value="false"/>
-              <disabledIcon value="resources/bubble_sort_disable_button.png"/>
+              <disabledIcon value="images/bubble_sort_disable_button.png"/>
               <doubleBuffered value="false"/>
               <focusCycleRoot value="false"/>
               <focusPainted value="true"/>
               <focusTraversalPolicyProvider value="false"/>
               <focusable value="true"/>
               <horizontalTextPosition value="0"/>
-              <icon value="resources/bubble_sort_button.png"/>
+              <icon value="images/bubble_sort_button.png"/>
               <iconTextGap value="0"/>
               <inheritsPopupMenu value="false"/>
               <minimumSize width="111" height="45"/>
@@ -54,9 +55,9 @@
               <borderPainted value="false"/>
               <contentAreaFilled value="false"/>
               <defaultCapable value="false"/>
-              <disabledIcon value="resources/selection_sort_disable_button.png"/>
+              <disabledIcon value="images/selection_sort_disable_button.png"/>
               <horizontalTextPosition value="0"/>
-              <icon value="resources/selection_sort_button.png"/>
+              <icon value="images/selection_sort_button.png"/>
               <minimumSize width="125" height="45"/>
               <preferredSize width="125" height="45"/>
               <text value=""/>
@@ -68,8 +69,8 @@
               <borderPainted value="false"/>
               <contentAreaFilled value="false"/>
               <defaultCapable value="false"/>
-              <disabledIcon value="resources/insertion_sort_disable_button.png"/>
-              <icon value="resources/insertion_sort_button.png"/>
+              <disabledIcon value="images/insertion_sort_disable_button.png"/>
+              <icon value="images/insertion_sort_button.png"/>
               <minimumSize width="125" height="45"/>
               <preferredSize width="125" height="45"/>
               <text value=""/>
@@ -81,8 +82,8 @@
               <borderPainted value="false"/>
               <contentAreaFilled value="false"/>
               <defaultCapable value="false"/>
-              <disabledIcon value="resources/merge_sort_disable_button.png"/>
-              <icon value="resources/merge_sort_button.png"/>
+              <disabledIcon value="images/merge_sort_disable_button.png"/>
+              <icon value="images/merge_sort_button.png"/>
               <minimumSize width="110" height="45"/>
               <preferredSize width="110" height="45"/>
               <text value=""/>
@@ -101,7 +102,7 @@
           <focusCycleRoot value="false"/>
           <foreground color="-1"/>
           <hideActionText value="true"/>
-          <icon value="resources/run_button.png"/>
+          <icon value="images/run_button.png"/>
           <iconTextGap value="0"/>
           <selected value="false"/>
           <text value=""/>

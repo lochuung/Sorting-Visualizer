@@ -8,22 +8,25 @@ import java.util.List;
 public class BubbleSort extends SortingPanel {
     public BubbleSort(List<Integer> values, String layout) {
         super(values, layout);
+        j = 1;
+        i = 0;
     }
 
     @Override
     protected void nextStep() {
         if (!isSorted()) {
-            if (j < values.size() - k - 1) {
-                if (values.get(j) > values.get(j + 1)) {
-                    int temp = values.get(j);
-                    values.set(j, values.get(j + 1));
-                    values.set(j + 1, temp);
+            if (j < values.size() - k) {
+                if (values.get(j - 1) > values.get(j)) {
+                    int temp = values.get(j - 1);
+                    values.set(j - 1, values.get(j));
+                    values.set(j, temp);
                 }
                 i = j;
                 j++;
+                if (j == values.size() - k) j = values.size();
             } else {
-                j = 0;
-                i = j;
+                j = 1;
+                i = 0;
                 k++;
             }
             steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
@@ -36,6 +39,13 @@ public class BubbleSort extends SortingPanel {
         }
         prevButton.setEnabled(true);
         restartButton.setEnabled(true);
+    }
+
+    @Override
+    protected void restart() {
+        super.restart();
+        j = 1;
+        i = 0;
     }
 
     private boolean isSorted() {

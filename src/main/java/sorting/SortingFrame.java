@@ -1,6 +1,7 @@
 package sorting;
 
 import form.MainForm;
+import util.Resources;
 import util.SortType;
 
 import javax.swing.*;
@@ -36,7 +37,9 @@ public class SortingFrame extends JFrame {
         setLayout(new BorderLayout());
         add(sortingPanel, BorderLayout.CENTER);
         setResizable(false);
-        setIconImage(new ImageIcon(MainForm.LOGO_PATH).getImage());
+        setIconImage
+                (new ImageIcon(Resources.getResource(MainForm.LOGO_PATH))
+                .getImage());
         setSize(DIM_W, DIM_H);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

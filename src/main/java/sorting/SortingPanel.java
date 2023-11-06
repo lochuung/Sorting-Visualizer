@@ -1,6 +1,6 @@
 package sorting;
 
-import util.Canvas;
+import util.Resources;
 import util.tuple.SortTuple;
 
 import javax.swing.*;
@@ -25,11 +25,11 @@ public abstract class SortingPanel extends JPanel {
     protected JButton restartButton;
     protected JButton doneButton;
     protected SortingFrame parentFrame;
-    private static final String RESTART_BUTTON_PATH = "src/resources/restart_button.png";
-    private static final String PREV_BUTTON_PATH = "src/resources/prev_button.png";
-    private static final String NEXT_BUTTON_PATH = "src/resources/next_button.png";
-    private static final String DONE_BUTTON_PATH = "src/resources/done_button.png";
-    private static final String BACK_TO_MAIN_BUTTON_PATH = "src/resources/back_to_main_button.png";
+    private static final String RESTART_BUTTON_PATH = "images/restart_button.png";
+    private static final String PREV_BUTTON_PATH = "images/prev_button.png";
+    private static final String NEXT_BUTTON_PATH = "images/next_button.png";
+    private static final String DONE_BUTTON_PATH = "images/done_button.png";
+    private static final String BACK_TO_MAIN_BUTTON_PATH = "images/back_to_main_button.png";
 
     public SortingPanel(List<Integer> values, String layout) {
         this.values = values;
@@ -88,7 +88,7 @@ public abstract class SortingPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Canvas.paintArray(g, layout, values, Arrays.asList(i, j));
+        paintArray(g, layout, values, Arrays.asList(i, j));
     }
 
     @Override
@@ -121,7 +121,7 @@ public abstract class SortingPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weighty = 1; // this will make the component center align vertically
+        gbc.weighty = 1;
         buttonWrapper.add(backButton, gbc);
 
         topPanel.setLayout(new GridLayout());
@@ -177,7 +177,7 @@ public abstract class SortingPanel extends JPanel {
 
     private JButton createButton(String imagePath) {
         JButton button = new JButton();
-        ImageIcon icon = new ImageIcon(imagePath);
+        ImageIcon icon = new ImageIcon(Resources.getResource(imagePath));
         int width = icon.getIconWidth() *
                 CONTROL_BUTTON_HEIGHT
                 / icon.getIconHeight();

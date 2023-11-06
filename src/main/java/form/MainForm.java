@@ -3,6 +3,7 @@ package form;
 import sorting.*;
 import util.Canvas;
 import util.ListHelper;
+import util.Resources;
 import util.SortType;
 
 import javax.swing.*;
@@ -13,9 +14,9 @@ import java.util.Objects;
 
 public class MainForm extends JFrame {
     public static final String PROGRAM_TITLE = "Sorting Visualization";
-    public static final String LOGO_PATH = "src/resources/program_logo.png";
-    private static final String RUN_BUTTON_PATH = "src/resources/run_button.png";
-    private static final String RUN_BUTTON_HOVER_PATH = "src/resources/run_hover_button.png";
+    public static final String LOGO_PATH = "images/program_logo.png";
+    private static final String RUN_BUTTON_PATH = "images/run_button.png";
+    private static final String RUN_BUTTON_HOVER_PATH = "images/run_hover_button.png";
     private JButton bubbleSortButton;
     private JButton selectionSortButton;
     private JButton insertionSortButton;
@@ -37,7 +38,7 @@ public class MainForm extends JFrame {
     private void initializeForm() {
         setContentPane(mainPanel);
         pack();
-        setIconImage(new ImageIcon(LOGO_PATH).getImage());
+        setIconImage(new ImageIcon(Resources.getResource(LOGO_PATH)).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle(PROGRAM_TITLE);
         setVisible(true);
@@ -56,13 +57,13 @@ public class MainForm extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 runButton.setIcon(
-                        new ImageIcon(RUN_BUTTON_HOVER_PATH));
+                        new ImageIcon(Resources.getResource(RUN_BUTTON_HOVER_PATH)));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 runButton.setIcon(
-                        new ImageIcon(RUN_BUTTON_PATH));
+                        new ImageIcon(Resources.getResource(RUN_BUTTON_PATH)));
             }
         });
     }
@@ -95,17 +96,56 @@ public class MainForm extends JFrame {
         if (arrayValues.getText().isEmpty()) {
             values = ListHelper.generateRandomNumbers(size);
         } else {
-            String regex = "^[0-9]+(,[0-9]+)*$";
-            if (!arrayValues.getText().matches(regex)) {
-                JOptionPane.showMessageDialog(null,
-                        "Please enter multiple positive numbers separated by commas, " +
-                                "e.g. 1,2,3,4,5");
-                return;
-            }
-            values = ListHelper.parseStringToList(arrayValues.getText(), size);
+            if (!isValidInput(size)) return;
+            values = ListHelper.parseStringToList(arrayValues.getText());
         }
         new SortingFrame(values, layout, choice, this);
         setVisible(false);
+    }
+
+    private boolean isValidInput(int size) {
+        if (!isValidFormat()) {
+            showFormatErrorMessage();
+            return false;
+        }
+        String[] values = arrayValues.getText().split(",");
+        if (values.length != size) {
+            showRangeErrorMessage();
+            return false;
+        }
+        for (String value : values) {
+            if (!isValidInteger(value)) {
+                showRangeErrorMessage();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidFormat() {
+        String regex = "^[0-9]+(,[0-9]+)*$";
+        return arrayValues.getText().matches(regex);
+    }
+
+    private boolean isValidInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private void showFormatErrorMessage() {
+        JOptionPane.showMessageDialog(null,
+                "Please enter multiple positive numbers separated by commas, " +
+                        "e.g. 1,2,3,4,5");
+    }
+
+    private void showRangeErrorMessage() {
+        JOptionPane.showMessageDialog(null,
+                "Please enter " + size.getSelectedItem() + " positive integers " +
+                        "between 0 and 999");
     }
 
     private void updateButtonAndInput() {

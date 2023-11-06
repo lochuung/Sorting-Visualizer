@@ -9,23 +9,16 @@ public class ListHelper {
         List<Integer> nums = new ArrayList<>();
         Random random = new Random();
         for (int i = 1; i <= size; i++) {
-            nums.add(random.nextInt(300) + 1);
+            nums.add(random.nextInt(999) + 1);
         }
         return nums;
     }
 
-    public static List<Integer> parseStringToList(String str, int size) {
+    public static List<Integer> parseStringToList(String str) {
         List<Integer> nums = new ArrayList<>();
         String[] arr = str.split(",");
         for (String s : arr) {
-            if (nums.size() == size)
-                break;
-            nums.add(Integer.parseInt(s.trim()));
-        }
-        if (nums.size() < size) {
-            for (int i = nums.size() + 1; i <= size; i++) {
-                nums.add(0);
-            }
+            nums.add(Integer.parseInt(s));
         }
         return nums;
     }

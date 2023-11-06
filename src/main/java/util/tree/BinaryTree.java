@@ -16,10 +16,24 @@ public class BinaryTree {
         copyTree(this.root, tree.root);
     }
 
+    public int getMaxHeightLevel() {
+        int size = root.data.size();
+        if ((size & 1) > 0) {
+            size++;
+        }
+        return (int) (Math.log(size) / Math.log(2)) + 1;
+    }
+
     public Stack<Node<List<Integer>>> copyNodeStack(Stack<Node<List<Integer>>> nodeStack) {
         Stack<Node<List<Integer>>> newStack = new Stack<>();
         for (Node<List<Integer>> node : nodeStack) {
-            newStack.push(findNode(node.data));
+            Node<List<Integer>> foundNode =
+                    findNode(node.data);
+            newStack.push(
+                    foundNode == null ?
+                            new Node<>(node.data) :
+                            foundNode
+            );
         }
         return newStack;
     }
@@ -47,6 +61,7 @@ public class BinaryTree {
         if (treeRoot == null) {
             return;
         }
+        root.isPainted = treeRoot.isPainted;
         if (treeRoot.left != null) {
             root.left = new Node<>(treeRoot.left.data);
             copyTree(root.left, treeRoot.left);
@@ -100,4 +115,5 @@ public class BinaryTree {
         int rightWidthLevel = getCurrentWidth(root.right, currentNode, widthLevel * 2 + 1);
         return Math.max(leftWidthLevel, rightWidthLevel);
     }
+
 }
