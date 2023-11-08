@@ -32,7 +32,7 @@ public class MergeSort extends SortingPanel {
             return;
         }
         g.clearRect(0, 0, getWidth(), getHeight());
-        Canvas.drawTree(g, currentTree.root, currentTree, currentNode);
+        Canvas.drawArrayTree(g, currentTree.root, currentTree, currentNode);
     }
 
 

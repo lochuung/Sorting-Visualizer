@@ -15,24 +15,29 @@ public class Canvas {
     private static final String LIGHT_BLUE = "#c9e1f5";
     private static final String GREEN = "#73b369";
     private static final String BLACK = "#46535e";
+    private static final String LIGHT_GREEN = "#c1f0ad";
     public static final int HORIZON = 350;
     public static final int VERT_INC = 15;
     public static int HOR_INC;
     public static final int CONTROL_BUTTON_HEIGHT = 30;
+    private static final int EMPTY_SPACE = 10;
+    private static int size = 0;
 
     public static void paintArray(Graphics g, String layout,
                                   List<Integer> list,
-                                  List<Integer> pointer) {
+                                  List<Integer> pointer,
+                                  int startSorted,
+                                  int sizeSorted) {
         assert list != null && pointer != null && pointer.size() <= 3;
 
         HOR_INC = DIM_W / list.size();
-        drawItems(g, layout, list, pointer);
+        drawItems(g, layout, list, pointer, startSorted, sizeSorted);
         drawPointers(g, layout, pointer);
     }
 
-    public static void drawTree(Graphics g, Node<List<Integer>> root,
-                                BinaryTree currentTree,
-                                Node<List<Integer>> currentNode) {
+    public static void drawArrayTree(Graphics g, Node<List<Integer>> root,
+                                     BinaryTree currentTree,
+                                     Node<List<Integer>> currentNode) {
         if (root == null || currentNode != null
                 && currentNode.isParent(root))
             return;
@@ -51,9 +56,9 @@ public class Canvas {
 
 
         if (root.left != null && root.left.isPainted)
-            drawTree(g, root.left, currentTree, currentNode);
+            drawArrayTree(g, root.left, currentTree, currentNode);
         if (root.right != null && root.right.isPainted)
-            drawTree(g, root.right, currentTree, currentNode);
+            drawArrayTree(g, root.right, currentTree, currentNode);
     }
 
     private static void paintChildren(Graphics g, BinaryTree currentTree,
@@ -82,7 +87,8 @@ public class Canvas {
             int x = i * itemWidth
                     + (widthLevel - 1) * arrayWidth * 2
                     + arrayWidth / 2;
-            int y = (heightLevel - 1) * 3 * VERT_INC + (DIM_H - treeHeight) / 2;
+            int y = (heightLevel - 1) * 3 * VERT_INC
+                    + (DIM_H - treeHeight) / 2;
             drawArray(g, x, y, itemWidth, list.get(i), i, isCurrent,
                     Color.decode(LIGHT_BLUE));
         }
@@ -91,11 +97,16 @@ public class Canvas {
     private static void drawPointers(Graphics g, String layout,
                                      List<Integer> pointer) {
         Color[] pointerColors = {Color.RED, Color.BLUE, Color.GREEN};
+        int width = layout.equals(barLayout)
+                ? HOR_INC :
+                (DIM_W - 2 * EMPTY_SPACE) / size;
         for (int i = 0; i < pointer.size(); i++) {
-            int x = pointer.get(i) * HOR_INC + HOR_INC / 2;
+            int x = pointer.get(i) * width + width / 2;
             int y = (DIM_H + HORIZON) / 2 + VERT_INC;
-            if (!layout.equals(barLayout))
-                y = DIM_H / 2 + VERT_INC * 4;
+            if (!layout.equals(barLayout)) {
+                x += EMPTY_SPACE;
+                y = DIM_H / 2 + VERT_INC * 4 + 10;
+            }
             drawPointer(g, pointerColors[i], x, y);
         }
     }
@@ -114,19 +125,25 @@ public class Canvas {
 
     private static void drawItems(Graphics g, String layout,
                                   List<Integer> list,
-                                  List<Integer> pointer) {
+                                  List<Integer> pointer,
+                                  int startSorted, int sizeSorted) {
         int maxElement = list.stream()
                 .max(Integer::compareTo)
                 .orElse(0);
 
-        String[] elementColors = {SKIN_COLOR, LIGHT_BLUE, GREEN};
+        String[] elementColors = {SKIN_COLOR, LIGHT_BLUE, LIGHT_GREEN};
+        size = list.size();
         for (int i = 0; i < list.size(); i++) {
-            if (pointer.contains(i)) {
+            if (i >= startSorted
+                    && i < startSorted + sizeSorted)
+                drawItem(g, layout, maxElement, list.get(i), i, true,
+                        Color.decode(GREEN));
+            else
+                drawItem(g, layout, maxElement, list.get(i), i, false,
+                        null);
+            if (pointer.contains(i))
                 drawItem(g, layout, maxElement, list.get(i), i, true,
                         Color.decode(elementColors[pointer.indexOf(i)]));
-            } else {
-                drawItem(g, layout, maxElement, list.get(i), i, false, null);
-            }
         }
     }
 
@@ -137,9 +154,11 @@ public class Canvas {
         if (layout.equals(barLayout)) {
             drawBar(g, maxElement, item, index, isCurrent, currentColor);
         } else {
-            int x = index * HOR_INC;
+            int width = (DIM_W - 2 * EMPTY_SPACE) / size;
+            int x = index * width + EMPTY_SPACE;
             int y = HORIZON - VERT_INC * 2;
-            drawArray(g, x, y, HOR_INC, item, index, isCurrent, currentColor);
+            drawArray(g, x, y, width, item, index,
+                    isCurrent, currentColor);
         }
     }
 
@@ -170,22 +189,23 @@ public class Canvas {
                                   int item, int index,
                                   boolean isCurrent,
                                   Color currentColor) {
-        if (isCurrent) {
-            g.setColor(currentColor);
-            g.fillRect(x, y, HOR_INC, Canvas.VERT_INC);
-        }
-        g.setColor(Color.BLACK);
-        g.drawRect(x, y, HOR_INC, Canvas.VERT_INC);
-
         String number = String.valueOf(item);
         int stringWidth = g.getFontMetrics().stringWidth(number);
         int stringHeight = g.getFontMetrics().getAscent();
+
+        if (isCurrent) {
+            g.setColor(currentColor);
+            g.fillRect(x, y, HOR_INC, stringHeight * 2);
+        }
+        g.setColor(Color.BLACK);
+        g.drawRect(x, y, HOR_INC, stringHeight * 2);
+
         g.drawString(number, x + (HOR_INC - stringWidth) / 2,
-                y + (Canvas.VERT_INC + stringHeight) / 2);
+                y + stringHeight * 3 / 2);
 
         String indexStr = String.valueOf(index);
         int indexWidth = g.getFontMetrics().stringWidth(indexStr);
         g.drawString(indexStr, x + (HOR_INC - indexWidth) / 2,
-                y + Canvas.VERT_INC + stringHeight);
+                y + stringHeight * 3);
     }
 }

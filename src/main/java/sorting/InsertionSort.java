@@ -1,13 +1,25 @@
 package sorting;
 
+import util.Canvas;
 import util.tuple.SortTuple;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InsertionSort extends SortingPanel {
     public InsertionSort(List<Integer> values, String layout) {
         super(values, layout);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        startSorted = 0;
+        sizeSorted = i + 1;
+        g.clearRect(0, 0, Canvas.DIM_W, Canvas.DIM_H);
+        Canvas.paintArray(g, layout, values, List.of(j),
+                startSorted, sizeSorted);
     }
 
     @Override

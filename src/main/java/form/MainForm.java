@@ -16,13 +16,15 @@ public class MainForm extends JFrame {
     public static final String PROGRAM_TITLE = "Sorting Visualization";
     public static final String LOGO_PATH = "images/program_logo.png";
     private static final String RUN_BUTTON_PATH = "images/run_button.png";
-    private static final String RUN_BUTTON_HOVER_PATH = "images/run_hover_button.png";
+    private static final String RUN_BUTTON_HOVER_PATH =
+            "images/run_hover_button.png";
     private JButton bubbleSortButton;
     private JButton selectionSortButton;
     private JButton insertionSortButton;
     private JButton mergeSortButton;
     private final JButton[] sortButtons =
-            {bubbleSortButton, selectionSortButton, insertionSortButton, mergeSortButton};
+            {bubbleSortButton, selectionSortButton,
+                    insertionSortButton, mergeSortButton};
     private JComboBox<Integer> size;
     private JComboBox<String> visualizeType;
     private JTextField arrayValues;
@@ -38,7 +40,8 @@ public class MainForm extends JFrame {
     private void initializeForm() {
         setContentPane(mainPanel);
         pack();
-        setIconImage(new ImageIcon(Resources.getResource(LOGO_PATH)).getImage());
+        setIconImage(new ImageIcon(Resources
+                .getResource(LOGO_PATH)).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle(PROGRAM_TITLE);
         setVisible(true);
@@ -57,13 +60,15 @@ public class MainForm extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 runButton.setIcon(
-                        new ImageIcon(Resources.getResource(RUN_BUTTON_HOVER_PATH)));
+                        new ImageIcon(Resources
+                                .getResource(RUN_BUTTON_HOVER_PATH)));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 runButton.setIcon(
-                        new ImageIcon(Resources.getResource(RUN_BUTTON_PATH)));
+                        new ImageIcon(Resources
+                                .getResource(RUN_BUTTON_PATH)));
             }
         });
     }
@@ -89,9 +94,11 @@ public class MainForm extends JFrame {
     }
 
     private void executeSort() {
-        Object sizeObj = Objects.requireNonNull(this.size.getSelectedItem());
+        Object sizeObj = Objects.requireNonNull(this.size
+                .getSelectedItem());
         int size = Integer.parseInt(sizeObj.toString());
-        String layout = (String) Objects.requireNonNull(visualizeType.getSelectedItem());
+        String layout = (String) Objects.requireNonNull(visualizeType
+                .getSelectedItem());
         List<Integer> values;
         if (arrayValues.getText().isEmpty()) {
             values = ListHelper.generateRandomNumbers(size);
@@ -99,8 +106,8 @@ public class MainForm extends JFrame {
             if (!isValidInput(size)) return;
             values = ListHelper.parseStringToList(arrayValues.getText());
         }
-        new SortingFrame(values, layout, choice, this);
         setVisible(false);
+        new SortingFrame(values, layout, choice, this);
     }
 
     private boolean isValidInput(int size) {
@@ -138,13 +145,15 @@ public class MainForm extends JFrame {
 
     private void showFormatErrorMessage() {
         JOptionPane.showMessageDialog(null,
-                "Please enter multiple positive numbers separated by commas, " +
+                "Please enter multiple positive numbers " +
+                        "separated by commas, " +
                         "e.g. 1,2,3,4,5");
     }
 
     private void showRangeErrorMessage() {
         JOptionPane.showMessageDialog(null,
-                "Please enter " + size.getSelectedItem() + " positive integers " +
+                "Please enter " + size.getSelectedItem()
+                        + " positive integers " +
                         "between 0 and 999");
     }
 
@@ -178,16 +187,20 @@ public class MainForm extends JFrame {
     }
 
     private void updateInputSetting() {
-        int minSize = 5;
-        int maxSize = choice == SortType.MERGE_SORT ? 8 : 12;
-        size.removeAllItems();
-        for (int i = minSize; i <= maxSize; i++) {
-            size.addItem(i);
+        Object selectedSize = size.getSelectedItem();
+        if (choice == SortType.MERGE_SORT) {
+            size.setSelectedItem("8");
+            for (int i = 12; i > 8; i--) {
+                size.removeItem(String.valueOf(i));
+            }
+            visualizeType.setSelectedItem("Bar");
+        } else {
+            if (size.getItemCount() < 12 - 5 + 1)
+                for (int i = 9; i <= 12; i++)
+                    size.addItem(i);
+            size.setSelectedItem(selectedSize);
         }
-        size.setSelectedItem(maxSize);
 
-        visualizeType.setSelectedItem(
-                (choice == SortType.MERGE_SORT) ? "Array" : "Bar");
         visualizeType.setEnabled(choice != SortType.MERGE_SORT);
     }
 

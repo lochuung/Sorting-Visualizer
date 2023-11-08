@@ -15,8 +15,11 @@ public class SelectionSort extends SortingPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Canvas.paintArray(g, layout, values, Arrays.asList(i, k, j));
+        startSorted = 0;
+        sizeSorted = i;
+        g.clearRect(0, 0, Canvas.DIM_W, Canvas.DIM_H);
+        Canvas.paintArray(g, layout, values, Arrays.asList(i, j, k),
+                startSorted, sizeSorted);
     }
 
     @Override

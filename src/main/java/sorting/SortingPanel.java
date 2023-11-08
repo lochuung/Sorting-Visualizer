@@ -19,6 +19,8 @@ public abstract class SortingPanel extends JPanel {
     protected int i = 0;
     protected int j = 0;
     protected int k = 0;
+    protected int startSorted = 0;
+    protected int sizeSorted = 0;
     protected Stack<SortTuple> steps;
     protected JButton prevButton;
     protected JButton nextButton;
@@ -88,7 +90,8 @@ public abstract class SortingPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        paintArray(g, layout, values, Arrays.asList(i, j));
+        paintArray(g, layout, values, Arrays.asList(i, j),
+                startSorted, sizeSorted);
     }
 
     @Override
