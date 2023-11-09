@@ -1,26 +1,24 @@
 package util;
 
-import util.tree.BinaryTree;
-import util.tree.Node;
-
 import java.awt.*;
 import java.util.List;
 
 public class Canvas {
     public static final int DIM_W = 600;
     public static final int DIM_H = 600;
-    private static final String barLayout = "Bar";
-    private static final String SKIN_COLOR = "#fbd3a6";
-    private static final String BLUE = "#1da4e4";
-    private static final String LIGHT_BLUE = "#c9e1f5";
-    private static final String GREEN = "#73b369";
-    private static final String BLACK = "#46535e";
-    private static final String LIGHT_GREEN = "#c1f0ad";
+    public static final String barLayout = "Bar";
+    public static final String SKIN_COLOR = "#fbd3a6";
+    public static final String BLUE = "#1da4e4";
+    public static final String LIGHT_BLUE = "#c9e1f5";
+    public static final String GREEN = "#73b369";
+    public static final String BLACK = "#46535e";
+    public static final String LIGHT_GREEN = "#c1f0ad";
     public static final int HORIZON = 350;
-    public static final int VERT_INC = 15;
+    public static int VERT_INC = 15;
     public static int HOR_INC;
     public static final int CONTROL_BUTTON_HEIGHT = 30;
     private static final int EMPTY_SPACE = 10;
+    private static final int RADIUS = 10;
     private static int size = 0;
 
     public static void paintArray(Graphics g, String layout,
@@ -33,65 +31,6 @@ public class Canvas {
         HOR_INC = DIM_W / list.size();
         drawItems(g, layout, list, pointer, startSorted, sizeSorted);
         drawPointers(g, layout, pointer);
-    }
-
-    public static void drawArrayTree(Graphics g, Node<List<Integer>> root,
-                                     BinaryTree currentTree,
-                                     Node<List<Integer>> currentNode) {
-        if (root == null || currentNode != null
-                && currentNode.isParent(root))
-            return;
-
-        int heightLevel = currentTree.getCurrentHeightLevel(root);
-        int widthLevel = currentTree.getCurrentWidth(root);
-        int maxHeightLevel = currentTree.getMaxHeightLevel();
-        paintNode(g, heightLevel, widthLevel, maxHeightLevel, root,
-                currentNode == root);
-
-        if (currentNode == null)
-            return;
-
-        if (currentNode == root)
-            paintChildren(g, currentTree, root, heightLevel);
-
-
-        if (root.left != null && root.left.isPainted)
-            drawArrayTree(g, root.left, currentTree, currentNode);
-        if (root.right != null && root.right.isPainted)
-            drawArrayTree(g, root.right, currentTree, currentNode);
-    }
-
-    private static void paintChildren(Graphics g, BinaryTree currentTree,
-                                      Node<List<Integer>> root, int heightLevel) {
-        if (root.left != null)
-            paintNode(g, heightLevel + 1,
-                    currentTree.getCurrentWidth(root.left), currentTree.getMaxHeightLevel(),
-                    root.left,
-                    false);
-
-        if (root.right != null)
-            paintNode(g, heightLevel + 1,
-                    currentTree.getCurrentWidth(root.right), currentTree.getMaxHeightLevel(), root.right,
-                    false);
-    }
-
-    private static void paintNode(Graphics g, int heightLevel,
-                                  int widthLevel, int maxHeightLevel, Node<List<Integer>> node,
-                                  boolean isCurrent) {
-        List<Integer> list = node.data;
-        int treeHeight = (maxHeightLevel + 1) * 3 * VERT_INC;
-        int maxWidthLevel = 1 << (heightLevel - 1);
-        int arrayWidth = DIM_W / maxWidthLevel / 2;
-        for (int i = 0; i < list.size(); i++) {
-            int itemWidth = arrayWidth / list.size();
-            int x = i * itemWidth
-                    + (widthLevel - 1) * arrayWidth * 2
-                    + arrayWidth / 2;
-            int y = (heightLevel - 1) * 3 * VERT_INC
-                    + (DIM_H - treeHeight) / 2;
-            drawArray(g, x, y, itemWidth, list.get(i), i, isCurrent,
-                    Color.decode(LIGHT_BLUE));
-        }
     }
 
     private static void drawPointers(Graphics g, String layout,
@@ -156,7 +95,7 @@ public class Canvas {
         } else {
             int width = (DIM_W - 2 * EMPTY_SPACE) / size;
             int x = index * width + EMPTY_SPACE;
-            int y = HORIZON - VERT_INC * 2;
+            int y = (DIM_H - HOR_INC) / 2;
             drawArray(g, x, y, width, item, index,
                     isCurrent, currentColor);
         }
@@ -185,27 +124,41 @@ public class Canvas {
                 y + (height + stringHeight) / 2);
     }
 
-    private static void drawArray(Graphics g, int x, int y, int HOR_INC,
-                                  int item, int index,
-                                  boolean isCurrent,
-                                  Color currentColor) {
-        String number = String.valueOf(item);
-        int stringWidth = g.getFontMetrics().stringWidth(number);
-        int stringHeight = g.getFontMetrics().getAscent();
+    public static void drawArray(Graphics g, int x, int y, int HOR_INC,
+                                 int item, int index,
+                                 boolean isCurrent,
+                                 Color currentColor) {
+        drawArray(g, x, y, HOR_INC, item, index, true,
+                isCurrent, currentColor);
+    }
 
+    public static void drawArray(Graphics g, int x, int y, int HOR_INC,
+                                 int item, int index, boolean isDrawItem,
+                                 boolean isCurrent,
+                                 Color currentColor) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
         if (isCurrent) {
-            g.setColor(currentColor);
-            g.fillRect(x, y, HOR_INC, stringHeight * 2);
+            g2d.setColor(currentColor);
+            g2d.fillRoundRect(x, y, HOR_INC, HOR_INC,
+                    RADIUS, RADIUS);
         }
-        g.setColor(Color.BLACK);
-        g.drawRect(x, y, HOR_INC, stringHeight * 2);
+        g2d.setColor(Color.BLACK);
+        g2d.drawRoundRect(x, y, HOR_INC, HOR_INC,
+                RADIUS, RADIUS);
 
-        g.drawString(number, x + (HOR_INC - stringWidth) / 2,
-                y + stringHeight * 3 / 2);
+        int stringHeight = g2d.getFontMetrics().getAscent();
+        if (isDrawItem) {
+            String number = String.valueOf(item);
+            int stringWidth = g2d.getFontMetrics().stringWidth(number);
+            g2d.drawString(number, x + (HOR_INC - stringWidth) / 2,
+                    y + (HOR_INC + stringHeight) / 2);
+        }
 
         String indexStr = String.valueOf(index);
-        int indexWidth = g.getFontMetrics().stringWidth(indexStr);
-        g.drawString(indexStr, x + (HOR_INC - indexWidth) / 2,
-                y + stringHeight * 3);
+        int indexWidth = g2d.getFontMetrics().stringWidth(indexStr);
+        g2d.drawString(indexStr, x + (HOR_INC - indexWidth) / 2,
+                y + HOR_INC + stringHeight);
     }
 }

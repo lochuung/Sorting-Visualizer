@@ -45,6 +45,7 @@ public class SortingFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle(MainForm.PROGRAM_TITLE);
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
     public MainForm getMainForm() {

@@ -40,6 +40,7 @@ public class MainForm extends JFrame {
     private void initializeForm() {
         setContentPane(mainPanel);
         pack();
+        setLocationRelativeTo(null);
         setIconImage(new ImageIcon(Resources
                 .getResource(LOGO_PATH)).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -193,7 +194,7 @@ public class MainForm extends JFrame {
             for (int i = 12; i > 8; i--) {
                 size.removeItem(String.valueOf(i));
             }
-            visualizeType.setSelectedItem("Bar");
+            visualizeType.setSelectedItem("Array");
         } else {
             if (size.getItemCount() < 12 - 5 + 1)
                 for (int i = 9; i <= 12; i++)

@@ -1,11 +1,8 @@
 package sorting;
-
-import util.Canvas;
 import util.tuple.SortTuple;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BubbleSort extends SortingPanel {
