@@ -17,6 +17,25 @@ public class BinaryTree {
         copyTree(this.root, tree.root);
     }
 
+    public Node findParentNode(Node node) {
+        return findParentNode(root, node);
+    }
+
+    public Node findParentNode(Node root, Node node) {
+        if (root == null) {
+            return null;
+        }
+        if (root.left == node || root.right == node) {
+            return root;
+        }
+        Node leftNode = findParentNode(root.left, node);
+        Node rightNode = findParentNode(root.right, node);
+        if (leftNode != null) {
+            return leftNode;
+        }
+        return rightNode;
+    }
+
     public int getMaxHeightLevel() {
         int size = root.data.size();
         if ((size & 1) > 0) {

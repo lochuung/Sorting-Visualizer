@@ -14,12 +14,12 @@ public class Canvas {
     public static final String BLACK = "#46535e";
     public static final String LIGHT_GREEN = "#c1f0ad";
     public static final int HORIZON = 350;
-    public static int VERT_INC = 15;
+    public static int VERT_INC = 40;
     public static int HOR_INC;
     public static final int CONTROL_BUTTON_HEIGHT = 30;
     private static final int EMPTY_SPACE = 10;
     private static final int RADIUS = 10;
-    private static int size = 0;
+    public static int size = 0;
 
     public static void paintArray(Graphics g, String layout,
                                   List<Integer> list,
@@ -37,16 +37,18 @@ public class Canvas {
                                      List<Integer> pointer) {
         Color[] pointerColors = {Color.RED, Color.BLUE, Color.GREEN};
         int width = layout.equals(barLayout)
-                ? HOR_INC :
-                (DIM_W - 2 * EMPTY_SPACE) / size;
+                ? HOR_INC : VERT_INC;
         for (int i = 0; i < pointer.size(); i++) {
             int x = pointer.get(i) * width + width / 2;
             int y = (DIM_H + HORIZON) / 2 + VERT_INC;
             if (!layout.equals(barLayout)) {
-                x += EMPTY_SPACE;
-                y = DIM_H / 2 + VERT_INC * 4 + 10;
+                x = (DIM_W - width * size) / 2
+                        + pointer.get(i) * width + width / 2;
+                y = (DIM_H - width) / 2 + width +
+                        g.getFontMetrics().getHeight() * 2;
             }
-            drawPointer(g, pointerColors[i], x, y);
+            if (pointer.get(i) < size)
+                drawPointer(g, pointerColors[i], x, y);
         }
     }
 
@@ -93,9 +95,10 @@ public class Canvas {
         if (layout.equals(barLayout)) {
             drawBar(g, maxElement, item, index, isCurrent, currentColor);
         } else {
-            int width = (DIM_W - 2 * EMPTY_SPACE) / size;
-            int x = index * width + EMPTY_SPACE;
-            int y = (DIM_H - HOR_INC) / 2;
+            int width = VERT_INC;
+            int x = (DIM_W - width * size) / 2
+                    + index * width;
+            int y = (DIM_H - width) / 2;
             drawArray(g, x, y, width, item, index,
                     isCurrent, currentColor);
         }

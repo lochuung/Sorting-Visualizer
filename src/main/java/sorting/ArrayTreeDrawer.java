@@ -1,6 +1,5 @@
 package sorting;
 
-import util.Canvas;
 import util.tree.BinaryTree;
 import util.tree.Node;
 
@@ -13,7 +12,8 @@ public class ArrayTreeDrawer {
     public static void drawArrayTree(Graphics g, Node root,
                                      BinaryTree currentTree,
                                      Node currentNode,
-                                     boolean isMergeStep) {
+                                     boolean isMergeStep,
+                                     int startX, int endX) {
         if (root == null || currentNode != null
                 && currentNode.isParent(root))
             return;
@@ -22,48 +22,63 @@ public class ArrayTreeDrawer {
         int widthLevel = currentTree.getCurrentWidth(root);
         int maxHeightLevel = currentTree.getMaxHeightLevel();
         boolean isCurrent = currentNode == root;
-        paintNode(g, heightLevel, widthLevel, maxHeightLevel, root,
+        paintNode(g, heightLevel, widthLevel, maxHeightLevel,
+                currentTree, root,
                 !isMergeStep && isCurrent,
-                false);
+                false, startX, endX);
 
         if (currentNode == null)
             return;
 
         if (currentNode == root)
             paintChildren(g, currentTree, root, heightLevel,
-                    isMergeStep);
+                    isMergeStep,
+                    startX, endX);
 
 
         if (root.left != null && root.left.isPainted)
-            drawArrayTree(g, root.left, currentTree, currentNode, isMergeStep);
+            drawArrayTree(g, root.left, currentTree, currentNode,
+                    isMergeStep,
+                    startX, (startX + endX) / 2);
         if (root.right != null && root.right.isPainted)
-            drawArrayTree(g, root.right, currentTree, currentNode, isMergeStep);
+            drawArrayTree(g, root.right, currentTree, currentNode,
+                    isMergeStep,
+                    (startX + endX) / 2, endX);
     }
 
     private static void paintChildren(Graphics g, BinaryTree currentTree,
                                       Node root, int heightLevel,
-                                      boolean isMergeStep) {
+                                      boolean isMergeStep,
+                                      int startX, int endX) {
         if (root.left != null)
             paintChildNode(g, currentTree, root.left,
-                    heightLevel, isMergeStep, root.right);
+                    heightLevel, isMergeStep, root.right,
+                    startX, (startX + endX) / 2);
 
-        if (root.right != null)
+        if (root.right != null) {
+            assert root.left != null;
             paintChildNode(g, currentTree, root.right,
-                    heightLevel, isMergeStep, root.left);
+                    heightLevel, isMergeStep, root.left,
+                    (startX + endX) / 2, endX);
+        }
     }
 
     private static void paintChildNode(Graphics g, BinaryTree currentTree,
                                        Node childNode,
-                                       int heightLevel, boolean isMergeStep,
-                                       Node siblingNode) {
+                                       int heightLevel,
+                                       boolean isMergeStep,
+                                       Node siblingNode,
+                                       int startX, int endX) {
         boolean isHighlighted = isMergeStep && isNodeHighlighted(childNode,
                 siblingNode);
         paintNode(g, heightLevel + 1,
                 currentTree.getCurrentWidth(childNode),
                 currentTree.getMaxHeightLevel(),
+                currentTree,
                 childNode,
                 isMergeStep,
-                isHighlighted);
+                isHighlighted,
+                startX, endX);
     }
 
     private static boolean isNodeHighlighted(Node node, Node siblingNode) {
@@ -78,21 +93,22 @@ public class ArrayTreeDrawer {
 
     private static void paintNode(Graphics g, int heightLevel,
                                   int widthLevel, int maxHeightLevel,
+                                  BinaryTree currentTree,
                                   Node node,
                                   boolean isCurrent,
-                                  boolean isLessChild) {
+                                  boolean isLessChild,
+                                  int startX, int endX) {
         List<Integer> list = node.data;
-        int verticalOffset = 4 * VERT_INC;
-        int treeHeight = (maxHeightLevel + 1) * verticalOffset;
-        int maxWidthLevel = 1 << (heightLevel - 1);
-        int arrayWidth = DIM_W / maxWidthLevel / 2;
+        int verticalOffset = VERT_INC;
+        int treeHeight = (maxHeightLevel + 1) * (verticalOffset
+        + g.getFontMetrics().getHeight() * 2);
         for (int i = 0; i < list.size(); i++) {
-            int itemWidth = arrayWidth / list.size();
-            int x = i * itemWidth
-                    + (widthLevel - 1) * arrayWidth * 2
-                    + arrayWidth / 2;
-            int y = (heightLevel - 1) * verticalOffset
-                    + (DIM_H - treeHeight) / 2;
+            int x = startX + (endX - startX - list.size()*VERT_INC) / 2
+                    + i * verticalOffset;
+            int y = (heightLevel - 1) * (verticalOffset
+                    + g.getFontMetrics().getHeight() * 2)
+                    + (DIM_H - treeHeight) / 2
+                    + g.getFontMetrics().getHeight() * 2;
             int item = list.get(i);
             String color = GREEN;
             boolean flag = isCurrent;
@@ -100,7 +116,7 @@ public class ArrayTreeDrawer {
                 color = LIGHT_BLUE;
                 flag = true;
             }
-            drawArray(g, x, y, itemWidth, item, i,
+            drawArray(g, x, y, verticalOffset, item, i,
                     item >= 0, flag,
                     Color.decode(color));
         }

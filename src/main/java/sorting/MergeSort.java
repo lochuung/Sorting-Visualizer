@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Stack;
 
 import static sorting.ArrayTreeDrawer.drawArrayTree;
+import static util.Canvas.DIM_W;
 
 public class MergeSort extends SortingPanel {
     private final Stack<MergeSortTuple> steps;
@@ -34,7 +35,7 @@ public class MergeSort extends SortingPanel {
         }
         g.clearRect(0, 0, getWidth(), getHeight());
         drawArrayTree(g, currentTree.root, currentTree, currentNode,
-                isMergeStep());
+                isMergeStep(), 0, DIM_W);
     }
 
 
