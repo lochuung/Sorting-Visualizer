@@ -25,7 +25,7 @@ public class MainForm extends JFrame {
     private final JButton[] sortButtons =
             {bubbleSortButton, selectionSortButton,
                     insertionSortButton, mergeSortButton};
-    private JComboBox<Integer> size;
+    private JComboBox<String> size;
     private JComboBox<String> visualizeType;
     private JTextField arrayValues;
     private JButton runButton;
@@ -95,9 +95,11 @@ public class MainForm extends JFrame {
     }
 
     private void executeSort() {
+        // get size
         Object sizeObj = Objects.requireNonNull(this.size
                 .getSelectedItem());
         int size = Integer.parseInt(sizeObj.toString());
+
         String layout = (String) Objects.requireNonNull(visualizeType
                 .getSelectedItem());
         List<Integer> values;
@@ -198,7 +200,7 @@ public class MainForm extends JFrame {
         } else {
             if (size.getItemCount() < 12 - 5 + 1)
                 for (int i = 9; i <= 12; i++)
-                    size.addItem(i);
+                    size.addItem(String.valueOf(i));
             size.setSelectedItem(selectedSize);
         }
 

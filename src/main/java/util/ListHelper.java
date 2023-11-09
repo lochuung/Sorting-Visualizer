@@ -7,10 +7,11 @@ import java.util.Random;
 
 public class ListHelper {
     private static final int maxRandom = 1000;
+    private static final Random random = new Random();
     public static List<Integer> generateRandomNumbers(int size) {
         List<Integer> nums = new ArrayList<>();
         for (int i = 1; i <= size; i++) {
-            nums.add((int) (Math.random() * maxRandom + 1));
+            nums.add(random.nextInt(maxRandom) + 1);
         }
         return nums;
     }

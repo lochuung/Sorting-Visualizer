@@ -42,10 +42,10 @@ public class SortingFrame extends JFrame {
                 .getImage());
         setSize(DIM_W, DIM_H);
         pack();
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle(MainForm.PROGRAM_TITLE);
         setVisible(true);
-        setLocationRelativeTo(null);
     }
 
     public MainForm getMainForm() {
