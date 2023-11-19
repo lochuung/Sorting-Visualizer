@@ -17,7 +17,6 @@ public class Canvas {
     public static int VERT_INC = 40;
     public static int HOR_INC;
     public static final int CONTROL_BUTTON_HEIGHT = 30;
-    private static final int EMPTY_SPACE = 10;
     private static final int RADIUS = 10;
     public static int size = 0;
 
@@ -29,7 +28,8 @@ public class Canvas {
         assert list != null && pointer != null && pointer.size() <= 3;
 
         HOR_INC = DIM_W / list.size();
-        drawItems(g, layout, list, pointer, startSorted, sizeSorted);
+        drawItems(g, layout, list, pointer, 
+                startSorted, sizeSorted);
         drawPointers(g, layout, pointer);
     }
 
@@ -90,27 +90,27 @@ public class Canvas {
 
     private static void drawItem(Graphics g, String layout,
                                  int maxElement, int item,
-                                 int index, boolean isCurrent,
+                                 int index, boolean pickColor,
                                  Color currentColor) {
         if (layout.equals(barLayout)) {
-            drawBar(g, maxElement, item, index, isCurrent, currentColor);
+            drawBar(g, maxElement, item, index, pickColor, currentColor);
         } else {
             int width = VERT_INC;
             int x = (DIM_W - width * size) / 2
                     + index * width;
             int y = (DIM_H - width) / 2;
             drawArray(g, x, y, width, item, index,
-                    isCurrent, currentColor);
+                    pickColor, currentColor);
         }
     }
 
     private static void drawBar(Graphics g, int maxElement, int item,
-                                int index, boolean isCurrent,
+                                int index, boolean pickColor,
                                 Color currentColor) {
         int height = (int) ((double) item / maxElement * HORIZON);
         int x = index * HOR_INC;
         int y = (DIM_H + HORIZON) / 2 - height;
-        if (isCurrent) {
+        if (pickColor) {
             g.setColor(currentColor);
         } else {
             g.setColor(Color.decode(BLUE));
@@ -129,20 +129,20 @@ public class Canvas {
 
     public static void drawArray(Graphics g, int x, int y, int HOR_INC,
                                  int item, int index,
-                                 boolean isCurrent,
+                                 boolean pickColor,
                                  Color currentColor) {
         drawArray(g, x, y, HOR_INC, item, index, true,
-                isCurrent, currentColor);
+                pickColor, currentColor);
     }
 
     public static void drawArray(Graphics g, int x, int y, int HOR_INC,
                                  int item, int index, boolean isDrawItem,
-                                 boolean isCurrent,
+                                 boolean pickColor,
                                  Color currentColor) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        if (isCurrent) {
+        if (pickColor) {
             g2d.setColor(currentColor);
             g2d.fillRoundRect(x, y, HOR_INC, HOR_INC,
                     RADIUS, RADIUS);

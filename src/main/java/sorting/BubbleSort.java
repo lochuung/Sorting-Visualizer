@@ -29,7 +29,8 @@ public class BubbleSort extends SortingPanel {
             if (isSwapped) {
                 isSwapped = false;
                 i = j + 1;
-                steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
+                steps.push(
+                        new SortTuple(new ArrayList<>(values), i, j, k));
 
                 if (i == values.size() - k) {
                     i = 1;

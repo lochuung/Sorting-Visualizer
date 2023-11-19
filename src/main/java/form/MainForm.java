@@ -45,7 +45,6 @@ public class MainForm extends JFrame {
                 .getResource(LOGO_PATH)).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle(PROGRAM_TITLE);
-        setVisible(true);
         setSize(Canvas.DIM_W, Canvas.DIM_H);
     }
 
@@ -107,7 +106,8 @@ public class MainForm extends JFrame {
             values = ListHelper.generateRandomNumbers(size);
         } else {
             if (!isValidInput(size)) return;
-            values = ListHelper.parseStringToList(arrayValues.getText());
+            values = ListHelper.parseStringToList(arrayValues.getText(),
+                    size);
         }
         setVisible(false);
         new SortingFrame(values, layout, choice, this);
@@ -119,10 +119,6 @@ public class MainForm extends JFrame {
             return false;
         }
         String[] values = arrayValues.getText().split(",");
-        if (values.length != size) {
-            showRangeErrorMessage();
-            return false;
-        }
         for (String value : values) {
             if (!isValidInteger(value)) {
                 showRangeErrorMessage();
