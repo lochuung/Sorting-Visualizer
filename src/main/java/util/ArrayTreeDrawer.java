@@ -1,4 +1,4 @@
-package sorting;
+package util;
 
 import util.tree.BinaryTree;
 import util.tree.Node;
@@ -19,11 +19,10 @@ public class ArrayTreeDrawer {
             return;
 
         int heightLevel = currentTree.getCurrentHeightLevel(root);
-        int widthLevel = currentTree.getCurrentWidth(root);
         int maxHeightLevel = currentTree.getMaxHeightLevel();
         boolean isCurrent = currentNode == root;
-        paintNode(g, heightLevel, widthLevel, maxHeightLevel,
-                currentTree, root,
+        paintNode(g, heightLevel, maxHeightLevel,
+                root,
                 !isMergeStep && isCurrent,
                 false, startX, endX);
 
@@ -72,9 +71,7 @@ public class ArrayTreeDrawer {
         boolean isHighlighted = isMergeStep && isNodeHighlighted(childNode,
                 siblingNode);
         paintNode(g, heightLevel + 1,
-                currentTree.getCurrentWidth(childNode),
                 currentTree.getMaxHeightLevel(),
-                currentTree,
                 childNode,
                 isMergeStep,
                 isHighlighted,
@@ -92,18 +89,17 @@ public class ArrayTreeDrawer {
     }
 
     private static void paintNode(Graphics g, int heightLevel,
-                                  int widthLevel, int maxHeightLevel,
-                                  BinaryTree currentTree,
+                                  int maxHeightLevel,
                                   Node node,
                                   boolean isCurrent,
-                                  boolean isLessChild,
+                                  boolean isChild,
                                   int startX, int endX) {
         List<Integer> list = node.data;
         int verticalOffset = VERT_INC;
         int treeHeight = (maxHeightLevel + 1) * (verticalOffset
         + g.getFontMetrics().getHeight() * 2);
         for (int i = 0; i < list.size(); i++) {
-            int x = startX + (endX - startX - list.size()*VERT_INC) / 2
+            int x = startX + (endX - startX - list.size()*verticalOffset) / 2
                     + i * verticalOffset;
             int y = (heightLevel - 1) * (verticalOffset
                     + g.getFontMetrics().getHeight() * 2)
@@ -112,7 +108,7 @@ public class ArrayTreeDrawer {
             int item = list.get(i);
             String color = GREEN;
             boolean flag = isCurrent;
-            if (i == node.currentIndex && isLessChild) {
+            if (i == node.currentIndex && isChild) {
                 color = LIGHT_BLUE;
                 flag = true;
             }

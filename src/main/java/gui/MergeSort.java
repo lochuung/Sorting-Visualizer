@@ -1,4 +1,4 @@
-package sorting;
+package gui;
 
 import util.tree.BinaryTree;
 import util.tree.Node;
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-import static sorting.ArrayTreeDrawer.drawArrayTree;
+import static util.ArrayTreeDrawer.drawArrayTree;
 import static util.Canvas.DIM_W;
 
 public class MergeSort extends SortingPanel {
@@ -20,7 +20,6 @@ public class MergeSort extends SortingPanel {
 
     public MergeSort(List<Integer> values, String layout) {
         super(values, layout);
-
         steps = new Stack<>();
         nodeStack = new Stack<>();
         currentTree = new BinaryTree(values);
@@ -41,22 +40,17 @@ public class MergeSort extends SortingPanel {
 
     @Override
     protected void nextStep() {
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
+        enablePrevAndRestartButton();
         if (currentNode == null) {
             initCurrentNode();
             pushStep();
             return;
         }
 
-        if (isLeaf(currentTree.root)) {
-            nextButton.setEnabled(false);
-            doneButton.setEnabled(false);
-            return;
-        }
         if (isDoneMerge()) {
             currentNode.left = null;
             currentNode.right = null;
+            if (isLeaf(currentTree.root)) disableNextAndFinishButton();
             pushStep();
             return;
         }
@@ -76,22 +70,21 @@ public class MergeSort extends SortingPanel {
 
     @Override
     protected void prevStep() {
-        nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
-        if (steps.isEmpty()) {
-            return;
+        if (steps.size() >= 2) {
+            steps.pop();
+            MergeSortTuple tuple = steps.peek();
+            currentTree = tuple.tree;
+            nodeStack = tuple.nodeStack;
+            currentNode = tuple.currentNode;
+            if (steps.size() == 1) {
+                restart();
+                disablePrevAndRestartButton();
+            }
+        } else {
+            restart();
+            disablePrevAndRestartButton();
         }
-        steps.pop();
-        MergeSortTuple prevStep = steps.peek();
-        currentNode = prevStep.currentNode;
-        currentTree = prevStep.tree;
-        nodeStack = prevStep.nodeStack;
-        if (steps.size() == 1) {
-            steps.clear();
-            pushStep();
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
-        }
+        enableNextAndFinishButton();
     }
 
     private boolean isDoneMerge() {
@@ -246,14 +239,20 @@ public class MergeSort extends SortingPanel {
 
     @Override
     protected void restart() {
-        while (steps.size() > 1) {
-            prevStep();
-        }
+        if (steps.isEmpty())
+            return;
+        MergeSortTuple tuple = steps.firstElement();
+        currentTree = tuple.tree;
+        currentNode = null;
+        nodeStack = new Stack<>();
+        values = tuple.tree.root.data;
+        steps.clear();
+        pushStep();
 
         prevButton.setEnabled(false);
         restartButton.setEnabled(false);
         nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
+        finishButton.setEnabled(true);
     }
 
     private void pushStep() {

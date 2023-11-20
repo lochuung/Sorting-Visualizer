@@ -1,6 +1,5 @@
-package form;
+package gui;
 
-import sorting.*;
 import util.Canvas;
 import util.ListHelper;
 import util.Resources;
@@ -119,6 +118,10 @@ public class MainForm extends JFrame {
             return false;
         }
         String[] values = arrayValues.getText().split(",");
+        if (values.length > size) {
+            showRangeErrorMessage();
+            return false;
+        }
         for (String value : values) {
             if (!isValidInteger(value)) {
                 showRangeErrorMessage();

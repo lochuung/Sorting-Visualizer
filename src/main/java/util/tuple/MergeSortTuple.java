@@ -2,8 +2,6 @@ package util.tuple;
 
 import util.tree.BinaryTree;
 import util.tree.Node;
-
-import java.util.List;
 import java.util.Stack;
 
 public class MergeSortTuple {

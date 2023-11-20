@@ -1,6 +1,5 @@
-package sorting;
+package gui;
 
-import form.MainForm;
 import util.Resources;
 import util.SortType;
 

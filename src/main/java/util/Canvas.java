@@ -13,7 +13,7 @@ public class Canvas {
     public static final String GREEN = "#73b369";
     public static final String BLACK = "#46535e";
     public static final String LIGHT_GREEN = "#c1f0ad";
-    public static final int HORIZON = 350;
+    public static final int VERTICAL = 350;
     public static int VERT_INC = 40;
     public static int HOR_INC;
     public static final int CONTROL_BUTTON_HEIGHT = 30;
@@ -22,15 +22,15 @@ public class Canvas {
 
     public static void paintArray(Graphics g, String layout,
                                   List<Integer> list,
-                                  List<Integer> pointer,
+                                  List<Integer> pointers,
                                   int startSorted,
                                   int sizeSorted) {
-        assert list != null && pointer != null && pointer.size() <= 3;
+        assert list != null && pointers != null && pointers.size() <= 3;
 
         HOR_INC = DIM_W / list.size();
-        drawItems(g, layout, list, pointer, 
+        drawItems(g, layout, list, pointers,
                 startSorted, sizeSorted);
-        drawPointers(g, layout, pointer);
+        drawPointers(g, layout, pointers);
     }
 
     private static void drawPointers(Graphics g, String layout,
@@ -40,7 +40,7 @@ public class Canvas {
                 ? HOR_INC : VERT_INC;
         for (int i = 0; i < pointer.size(); i++) {
             int x = pointer.get(i) * width + width / 2;
-            int y = (DIM_H + HORIZON) / 2 + VERT_INC;
+            int y = (DIM_H + VERTICAL) / 2 + VERT_INC;
             if (!layout.equals(barLayout)) {
                 x = (DIM_W - width * size) / 2
                         + pointer.get(i) * width + width / 2;
@@ -107,9 +107,9 @@ public class Canvas {
     private static void drawBar(Graphics g, int maxElement, int item,
                                 int index, boolean pickColor,
                                 Color currentColor) {
-        int height = (int) ((double) item / maxElement * HORIZON);
+        int height = (int) ((double) item / maxElement * VERTICAL);
         int x = index * HOR_INC;
-        int y = (DIM_H + HORIZON) / 2 - height;
+        int y = (DIM_H + VERTICAL) / 2 - height;
         if (pickColor) {
             g.setColor(currentColor);
         } else {

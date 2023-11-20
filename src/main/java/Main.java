@@ -1,6 +1,5 @@
-import form.MainForm;
-
-import javax.swing.*;
+import gui.MainForm;
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {

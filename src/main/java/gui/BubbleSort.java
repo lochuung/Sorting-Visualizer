@@ -1,4 +1,4 @@
-package sorting;
+package gui;
 import util.tuple.SortTuple;
 
 import java.awt.*;
@@ -27,16 +27,7 @@ public class BubbleSort extends SortingPanel {
     protected void nextStep() {
         if (!isSorted()) {
             if (isSwapped) {
-                isSwapped = false;
-                i = j + 1;
-                steps.push(
-                        new SortTuple(new ArrayList<>(values), i, j, k));
-
-                if (i == values.size() - k) {
-                    i = 1;
-                    j = 0;
-                    k++;
-                }
+                afterSwapHandle();
                 return;
             }
             if (j < values.size() - k - 1) {
@@ -52,25 +43,36 @@ public class BubbleSort extends SortingPanel {
                     i = j + 1;
                 }
                 if (i == values.size() - k) {
-                    i = 1;
-                    j = 0;
-                    k++;
+                    nextPass();
                 }
             } else {
-                i = 1;
-                j = 0;
-                k++;
+                nextPass();
             }
             steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         } else {
-            i = values.size();
-            j = values.size();
-            k = values.size();
-            nextButton.setEnabled(false);
-            doneButton.setEnabled(false);
+            i = -1;
+            j = -1;
+            k = -1;
+            disableNextAndFinishButton();
         }
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
+        enablePrevAndRestartButton();
+    }
+
+    private void afterSwapHandle() {
+        isSwapped = false;
+        i = j + 1;
+        steps.push(
+                new SortTuple(new ArrayList<>(values), i, j, k));
+
+        if (i == values.size() - k) {
+            nextPass();
+        }
+    }
+
+    private void nextPass() {
+        i = 1;
+        j = 0;
+        k++;
     }
 
     @Override

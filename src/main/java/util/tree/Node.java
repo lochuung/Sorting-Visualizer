@@ -17,13 +17,6 @@ public class Node {
         this.isPainted = false;
     }
 
-    public Node(Node node) {
-        this.data = node.data;
-        this.left = node.left;
-        this.right = node.right;
-        this.isPainted = node.isPainted;
-    }
-
     public boolean isParent(Node node) {
         return left == node || right == node;
     }

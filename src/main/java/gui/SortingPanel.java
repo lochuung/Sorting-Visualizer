@@ -1,4 +1,4 @@
-package sorting;
+package gui;
 
 import util.Resources;
 import util.tuple.SortTuple;
@@ -25,13 +25,16 @@ public abstract class SortingPanel extends JPanel {
     protected JButton prevButton;
     protected JButton nextButton;
     protected JButton restartButton;
-    protected JButton doneButton;
+    protected JButton finishButton;
     protected SortingFrame parentFrame;
     private static final String RESTART_BUTTON_PATH = "images/restart_button.png";
     private static final String PREV_BUTTON_PATH = "images/prev_button.png";
     private static final String NEXT_BUTTON_PATH = "images/next_button.png";
     private static final String DONE_BUTTON_PATH = "images/done_button.png";
     private static final String BACK_TO_MAIN_BUTTON_PATH = "images/back_to_main_button.png";
+
+    public SortingPanel() {
+    }
 
     public SortingPanel(List<Integer> values, String layout) {
         this.values = values;
@@ -43,6 +46,13 @@ public abstract class SortingPanel extends JPanel {
         setUpButton();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        paintArray(g, layout, values, Arrays.asList(i, j),
+                startSorted, sizeSorted);
+    }
+
     public void setParentFrame(SortingFrame parentFrame) {
         this.parentFrame = parentFrame;
     }
@@ -50,26 +60,22 @@ public abstract class SortingPanel extends JPanel {
     protected abstract void nextStep();
 
     protected void prevStep() {
-        if (!steps.isEmpty()) {
-            SortTuple tuple = steps.pop();
+        if (steps.size() >= 2) {
+            steps.pop();
+            SortTuple tuple = steps.peek();
             values = tuple.values;
             i = tuple.i;
             j = tuple.j;
             k = tuple.otherIndex;
+            if (steps.size() == 1) {
+                restart();
+                disablePrevAndRestartButton();
+            }
         } else {
-            i = 0;
-            j = 0;
-            k = 0;
-            prevButton.setEnabled(false);
-            restartButton.setEnabled(false);
+            restart();
+            disablePrevAndRestartButton();
         }
-        nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
-    }
-
-    protected void lastStep() {
-        while (nextButton.isEnabled() || doneButton.isEnabled())
-            nextStep();
+        enableNextAndFinishButton();
     }
 
     protected void restart() {
@@ -81,17 +87,33 @@ public abstract class SortingPanel extends JPanel {
         values = steps.firstElement().values;
         steps.clear();
         steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
-        prevButton.setEnabled(false);
-        restartButton.setEnabled(false);
-        nextButton.setEnabled(true);
-        doneButton.setEnabled(true);
+        disablePrevAndRestartButton();
+        enableNextAndFinishButton();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        paintArray(g, layout, values, Arrays.asList(i, j),
-                startSorted, sizeSorted);
+    protected void finishAllStep() {
+        while (nextButton.isEnabled() || finishButton.isEnabled())
+            nextStep();
+    }
+
+    protected void disablePrevAndRestartButton() {
+        prevButton.setEnabled(false);
+        restartButton.setEnabled(false);
+    }
+
+    protected void enablePrevAndRestartButton() {
+        prevButton.setEnabled(true);
+        restartButton.setEnabled(true);
+    }
+
+    protected void disableNextAndFinishButton() {
+        nextButton.setEnabled(false);
+        finishButton.setEnabled(false);
+    }
+
+    protected void enableNextAndFinishButton() {
+        nextButton.setEnabled(true);
+        finishButton.setEnabled(true);
     }
 
     @Override
@@ -99,12 +121,12 @@ public abstract class SortingPanel extends JPanel {
         return new Dimension(DIM_W, DIM_H);
     }
 
-    private void setUpButton() {
+    protected void setUpButton() {
         JButton[] controlButtons = {
                 restartButton = createButton(RESTART_BUTTON_PATH),
                 prevButton = createButton(PREV_BUTTON_PATH),
                 nextButton = createButton(NEXT_BUTTON_PATH),
-                doneButton = createButton(DONE_BUTTON_PATH)
+                finishButton = createButton(DONE_BUTTON_PATH)
         };
 
         JPanel bottomPanel = new JPanel();
@@ -114,6 +136,7 @@ public abstract class SortingPanel extends JPanel {
         bottomPanel.setSize(DIM_W, CONTROL_BUTTON_HEIGHT);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        // back button
         JPanel topPanel = new JPanel();
         JButton backButton = createButton(BACK_TO_MAIN_BUTTON_PATH);
         backButton.addActionListener(e -> {
@@ -131,7 +154,7 @@ public abstract class SortingPanel extends JPanel {
         JLabel label = getSortTitle();
         topPanel.add(label);
         topPanel.add(buttonWrapper);
-        topPanel.setPreferredSize(new Dimension(DIM_W, (DIM_H - HORIZON) / 2));
+        topPanel.setPreferredSize(new Dimension(DIM_W, (DIM_H - VERTICAL) / 2));
         add(topPanel, BorderLayout.NORTH);
 
         restartButton.setEnabled(false);
@@ -151,7 +174,7 @@ public abstract class SortingPanel extends JPanel {
                     repaint();
                 },
                 e -> {
-                    lastStep();
+                    finishAllStep();
                     repaint();
                 }
         };

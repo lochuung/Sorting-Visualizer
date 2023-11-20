@@ -17,25 +17,6 @@ public class BinaryTree {
         copyTree(this.root, tree.root);
     }
 
-    public Node findParentNode(Node node) {
-        return findParentNode(root, node);
-    }
-
-    public Node findParentNode(Node root, Node node) {
-        if (root == null) {
-            return null;
-        }
-        if (root.left == node || root.right == node) {
-            return root;
-        }
-        Node leftNode = findParentNode(root.left, node);
-        Node rightNode = findParentNode(root.right, node);
-        if (leftNode != null) {
-            return leftNode;
-        }
-        return rightNode;
-    }
-
     public int getMaxHeightLevel() {
         int size = root.data.size();
         if ((size & 1) > 0) {
@@ -126,22 +107,4 @@ public class BinaryTree {
         int rightHeightLevel = getCurrentHeightLevel(root.right, currentNode, heightLevel + 1);
         return Math.max(leftHeightLevel, rightHeightLevel);
     }
-
-    public int getCurrentWidth(Node currentNode) {
-        int heightLevel = getCurrentHeightLevel(currentNode);
-        return getCurrentWidth(root, currentNode, 1) - (1 << (heightLevel - 1)) + 1;
-    }
-
-    private int getCurrentWidth(Node root, Node currentNode, int widthLevel) {
-        if (root == null) {
-            return 0;
-        }
-        if (root == currentNode) {
-            return widthLevel;
-        }
-        int leftWidthLevel = getCurrentWidth(root.left, currentNode, widthLevel * 2);
-        int rightWidthLevel = getCurrentWidth(root.right, currentNode, widthLevel * 2 + 1);
-        return Math.max(leftWidthLevel, rightWidthLevel);
-    }
-
 }

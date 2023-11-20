@@ -1,4 +1,4 @@
-package sorting;
+package gui;
 
 import util.Canvas;
 import util.tuple.SortTuple;
@@ -37,12 +37,11 @@ public class SelectionSort extends SortingPanel {
                 j = i;
                 k = i;
             }
+            if (i >= values.size()) disableNextAndFinishButton();
             steps.push(new SortTuple(new ArrayList<>(values), i, j, k));
         } else {
-            nextButton.setEnabled(false);
-            doneButton.setEnabled(false);
+            disableNextAndFinishButton();
         }
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
+        enablePrevAndRestartButton();
     }
 }

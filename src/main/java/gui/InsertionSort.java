@@ -1,11 +1,10 @@
-package sorting;
+package gui;
 
 import util.Canvas;
 import util.tuple.SortTuple;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InsertionSort extends SortingPanel {
@@ -34,14 +33,13 @@ public class InsertionSort extends SortingPanel {
                 i++;
                 j = i;
             }
+            if (i >= values.size()) disableNextAndFinishButton();
             steps.push(new SortTuple(new ArrayList<>(values), i, j));
         } else {
             i = values.size();
             j = values.size();
-            nextButton.setEnabled(false);
-            doneButton.setEnabled(false);
+            disableNextAndFinishButton();
         }
-        prevButton.setEnabled(true);
-        restartButton.setEnabled(true);
+        enablePrevAndRestartButton();
     }
 }
