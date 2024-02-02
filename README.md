@@ -1,7 +1,7 @@
 # Sorting Visualizer
 This project is a sorting visualizer that visualizes the sorting algorithms in step by step manner. User can control each step of the sorting algorithm and can visualize the sorting process in a better way. This project is made using Java Swing and AWT libraries.
 
-:star: If you find ToolJet useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
+:star: If you find this project useful, please consider giving us a star on GitHub! Your support helps us continue to innovate and deliver exciting features.
 
 ![Number of GitHub contributors](https://img.shields.io/github/contributors/lochuung/Sorting-Visualizer)
 [![Number of GitHub issues that are open](https://img.shields.io/github/issues/lochuung/Sorting-Visualizer)](https://github.com/lochuung/Sorting-Visualizer/issues)
